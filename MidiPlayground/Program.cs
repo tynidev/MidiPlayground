@@ -1,14 +1,8 @@
 ﻿using Sanford.Multimedia.Midi;
-using Sanford.Multimedia.Midi.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Keys;
-using Sanford.Multimedia;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace MidiPlayground
 {
@@ -20,7 +14,32 @@ namespace MidiPlayground
 
         static void Main(string[] args)
         {
-            if(InputDevice.DeviceCount < 1)
+            var chords = new Dictionary<string, List<Keys.Key>>();
+            Chords.GetChordForEveryChromaticNote((noteName, i) =>
+            {
+                chords.Add(noteName + " Root Position", Chords.GenerateChord(i, Constants.TriadMajorRootPos));
+                chords.Add(noteName + " Minor Root Position", Chords.GenerateChord(i, Constants.TriadMinorRootPos));
+
+                //chords.Add(noteName + " 1st Inversion", Chords.GenerateChord(i, Constants.TriadMajor1stInv));
+                //chords.Add(noteName + " Minor 1st Inversion", Chords.GenerateChord(i, Constants.TriadMinor1stInv));
+
+                //chords.Add(noteName + " 2nd Inversion", Chords.GenerateChord(i, Constants.TriadMajor2ndInv));
+                //chords.Add(noteName + " Minor 2nd Inversion", Chords.GenerateChord(i, Constants.TriadMinor2ndInv));
+
+                //chords.Add(noteName + "Seventh Root Position", Chords.GenerateChord(i, Constants.SeventhMajorRootPos));
+                //chords.Add(noteName + "Minor Seventh Root Position", Chords.GenerateChord(i, Constants.SeventhMinorRootPos));
+
+                //chords.Add(noteName + "Seventh 1st Inversion", Chords.GenerateChord(i, Constants.SeventhMajor1stInv));
+                //chords.Add(noteName + "Minor Seventh 1st Inversion", Chords.GenerateChord(i, Constants.SeventhMinor1stInv));
+
+                //chords.Add(noteName + "Seventh Root 2nd Inversion", Chords.GenerateChord(i, Constants.SeventhMajor2ndInv));
+                //chords.Add(noteName + "Minor Seventh 2nd Inversion", Chords.GenerateChord(i, Constants.SeventhMinor2ndInv));
+
+                //chords.Add(noteName + "Seventh 3rd Inversion", Chords.GenerateChord(i, Constants.SeventhMajor3rdInv));
+                //chords.Add(noteName + "Minor Seventh 3rd Inversion", Chords.GenerateChord(i, Constants.SeventhMinor3rdInv));
+            });
+
+            if (InputDevice.DeviceCount < 1)
             {
                 Console.WriteLine("No MIDI device found. Connect device and restart.");
                 return;
@@ -34,13 +53,14 @@ namespace MidiPlayground
                 keyboard.StartRecording(inDevice, KeyActions);
 
                 var rand = new Random();
+
                 while (true)
                 {
-                    int chordIdx = rand.Next(0, Chords.ChordMaps.Count);
-                    var chord = Chords.ChordMaps.ElementAt(chordIdx);
+                    int chordIdx = rand.Next(0, chords.Count);
+                    var chord = chords.ElementAt(chordIdx);
 
                     Console.WriteLine($"Play {chord.Key}");
-                    var playAction = new PlayChordAction(chord.Value);
+                    var playAction = new PlayChord(chord.Value);
                     do
                     {
                         playAction.WaitForKeyInput(KeyActions);

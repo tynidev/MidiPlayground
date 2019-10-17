@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Sanford.Multimedia.Midi;
 
 namespace Keys
 {
-    public class PlayNoteAction : IKeyAction
+    public class PlayNote : IKeyAction
     {
         private Key keyToPlay = null;
         private bool ready = false;
         public bool Played;
 
-        public PlayNoteAction(Key key)
+        public PlayNote(Key key)
         {
             this.keyToPlay = key;
         }
@@ -25,6 +21,9 @@ namespace Keys
 
             lock (this)
             {
+                if (ready)
+                    return;
+
                 this.Played = this.keyToPlay.AbsolutePitch == key.AbsolutePitch;
                 this.ready = true;
             }

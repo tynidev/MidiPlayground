@@ -46,11 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chords.cs" />
-    <Compile Include="IKeyAction.cs" />
+    <Compile Include="Actions\IKeyAction.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Key.cs" />
     <Compile Include="Keyboard.cs" />
-    <Compile Include="PlayChordAction.cs" />
-    <Compile Include="PlayNoteAction.cs" />
+    <Compile Include="Actions\PlayMelody.cs" />
+    <Compile Include="Actions\PlayInterval.cs" />
+    <Compile Include="Actions\PlayChord.cs" />
+    <Compile Include="Actions\PlayNote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
