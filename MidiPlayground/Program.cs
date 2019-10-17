@@ -64,14 +64,19 @@ namespace MidiPlayground
                     int chordIdx = rand.Next(0, Chords.ChordMaps.Count);
                     var chord = Chords.ChordMaps.ElementAt(chordIdx);
 
+
                     Console.WriteLine($"Play {chord.Key}");
-
                     var playAction = new PlayChordAction(chord.Value);
-                    KeyActions.Add(playAction);
-                    while (!playAction.ready) { Thread.Sleep(10); };
-                    KeyActions.Clear();
+                    do
+                    {
+                        playAction.ready = false;
+                        KeyActions.Add(playAction);
+                        while (!playAction.ready) { Thread.Sleep(10); };
+                        KeyActions.Clear();
 
-                    Console.WriteLine(playAction.played ? "You did it!" : "Nope...");
+                        Console.WriteLine(playAction.played ? "You did it!" : "Nope...");
+                    }
+                    while (!playAction.played);
                 }
             }
         }
