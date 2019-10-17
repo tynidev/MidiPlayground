@@ -30,12 +30,15 @@ namespace Keys
 
             for(int i = 0; i < chord.Count(); i++)
             {
-                if (on.ElementAt(i).AbsolutePitch != chord[i].AbsolutePitch)
+                if (on.ElementAt(i).AbsolutePitch != chord.ElementAt(i).Value.AbsolutePitch)
                 {
                     played = false;
+                    ready = true;
                     return;
                 }
             }
+            played = true;
+            ready = true;
             return;
         }
     }
