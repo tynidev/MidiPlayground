@@ -3,9 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Keys;
+using System.Diagnostics;
 
 namespace MidiPlayground
 {
+    class Card
+    {
+        public string Prompt = "";
+        public int Weight = 1500;
+        public int Picked = 0;
+    }
+
     class Program
     {
         private static Keyboard keyboard = new Keyboard();
@@ -18,7 +26,7 @@ namespace MidiPlayground
             Generator.ForEveryChromaticNote((string noteName, int midiNoteValue) =>
             {
                 chords.Add(noteName + " Root Position", Generator.GenerateChord(midiNoteValue, Constants.TriadMajorRootPos));
-                chords.Add(noteName + " Minor Root Position", Generator.GenerateChord(midiNoteValue, Constants.TriadMinorRootPos));
+                //chords.Add(noteName + " Minor Root Position", Generator.GenerateChord(midiNoteValue, Constants.TriadMinorRootPos));
 
                 //chords.Add(noteName + " 1st Inversion", Chords.GenerateChord(i, Constants.TriadMajor1stInv));
                 //chords.Add(noteName + " Minor 1st Inversion", Chords.GenerateChord(i, Constants.TriadMinor1stInv));
@@ -52,23 +60,53 @@ namespace MidiPlayground
                 keyboard = new Keyboard(inDevice);
                 keyboard.StartRecording(inDevice, KeyActions);
 
-                var rand = new Random();
+                List<Card> cards = new List<Card>();
+                foreach(var c in chords)
+                {
+                    cards.Add(new Card() { Prompt = c.Key });
+                }
+
+                var rand = new Random((int)DateTime.Now.Ticks);
 
                 while (true)
                 {
-                    int chordIdx = rand.Next(0, chords.Count);
-                    var chord = chords.ElementAt(chordIdx);
+                    Card card = pick(cards, rand);
+                    card.Picked++;
 
-                    Console.WriteLine($"Play {chord.Key}");
-                    var playAction = new PlayChord(chord.Value);
+                    Console.WriteLine($"Play {card.Prompt}");
+                    var playAction = new PlayNote(chords[card.Prompt][0]);
+                    Stopwatch watch = new Stopwatch();
+                    watch.Start();
                     do
                     {
                         playAction.WaitForKeyInput(KeyActions);
                         Console.WriteLine(playAction.Played ? "You did it!" : "Nope...");
                     }
                     while (!playAction.Played);
+                    watch.Stop();
+                    card.Weight = (((card.Picked - 1) * card.Weight) + (int)watch.ElapsedMilliseconds) / (card.Picked);
                 }
             }
+        }
+
+        private static Card pick(List<Card> cards, Random rand)
+        {
+            cards.Sort((i1, i2) => { return i1.Weight - i2.Weight; });
+
+            int sumOfWeights = 0;
+            foreach (var c in cards)
+                sumOfWeights += c.Weight;
+
+            int randomWeight = rand.Next(1, sumOfWeights);
+
+            foreach (var c in cards)
+            {
+                randomWeight -= c.Weight;
+                if (randomWeight <= 0)
+                    return c;
+            }
+
+            throw new Exception("Should not get here");
         }
 
         private static void OutputCurrentPlayedNotes()
