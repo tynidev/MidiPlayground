@@ -66,11 +66,9 @@ namespace MidiPlayground
                     cards.Add(new Card() { Prompt = c.Key });
                 }
 
-                var rand = new Random((int)DateTime.Now.Ticks);
-
                 while (true)
                 {
-                    Card card = pick(cards, rand);
+                    Card card = pick(cards);
                     card.Picked++;
 
                     Console.WriteLine($"Play {card.Prompt}");
@@ -89,15 +87,15 @@ namespace MidiPlayground
             }
         }
 
-        private static Card pick(List<Card> cards, Random rand)
+        private static Card pick(List<Card> cards)
         {
-            cards.Sort((i1, i2) => { return i1.Weight - i2.Weight; });
+            Shuffle(cards);
 
             int sumOfWeights = 0;
             foreach (var c in cards)
                 sumOfWeights += c.Weight;
 
-            int randomWeight = rand.Next(1, sumOfWeights);
+            int randomWeight = rng.Next(1, sumOfWeights);
 
             foreach (var c in cards)
             {
@@ -107,6 +105,21 @@ namespace MidiPlayground
             }
 
             throw new Exception("Should not get here");
+        }
+
+        private static Random rng = new Random((int)DateTime.Now.Ticks);
+
+        public static void Shuffle<T>(IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
 
         private static void OutputCurrentPlayedNotes()
