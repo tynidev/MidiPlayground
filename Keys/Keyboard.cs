@@ -84,7 +84,7 @@ namespace Keys
                 }
 
                 foreach (var foo in actions)
-                    foo.Action(this, this[key], command);
+                    foo.KeyPressEvent(this, this[key], command);
             };
             inDevice.StartRecording();
         }

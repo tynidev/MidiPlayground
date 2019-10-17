@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Keys;
 using Sanford.Multimedia;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace MidiPlayground
 {
@@ -19,64 +20,33 @@ namespace MidiPlayground
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Select Input device");
-            for(int i = 0; i < InputDevice.DeviceCount; i++)
+            if(InputDevice.DeviceCount < 1)
             {
-                var caps = InputDevice.GetDeviceCapabilities(i);
-                Console.WriteLine($"{i + 1}: {caps.name}");
+                Console.WriteLine("No MIDI device found. Connect device and restart.");
+                return;
             }
 
-            var device = (int)Console.ReadKey().KeyChar - 49;
-
-            if(device < 0 || device >= InputDevice.DeviceCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(device));
-            }
-
-            using (InputDevice inDevice = new InputDevice(0))
+            int deviceId = 0;
+            Console.WriteLine("Using Device: " + InputDevice.GetDeviceCapabilities(deviceId).name);
+            using (InputDevice inDevice = new InputDevice(deviceId))
             {
                 keyboard = new Keyboard(inDevice);
-
-                inDevice.ChannelMessageReceived += delegate (object sender, ChannelMessageEventArgs e)
-                {
-                    var command = e.Message.Command;
-                    var key = e.Message.Data1;
-
-                    switch (command)
-                    {
-                        case ChannelCommand.NoteOn:
-                            keyboard[key].On = true;
-                            break;
-                        case ChannelCommand.NoteOff:
-                            keyboard[key].On = false;
-                            break;
-                    }
-
-                    foreach (var foo in KeyActions)
-                        foo.Action(keyboard, keyboard[key], command);
-                };
+                keyboard.StartRecording(inDevice, KeyActions);
 
                 var rand = new Random();
-                inDevice.StartRecording();
-
                 while (true)
                 {
                     int chordIdx = rand.Next(0, Chords.ChordMaps.Count);
                     var chord = Chords.ChordMaps.ElementAt(chordIdx);
 
-
                     Console.WriteLine($"Play {chord.Key}");
                     var playAction = new PlayChordAction(chord.Value);
                     do
                     {
-                        playAction.ready = false;
-                        KeyActions.Add(playAction);
-                        while (!playAction.ready) { Thread.Sleep(10); };
-                        KeyActions.Clear();
-
-                        Console.WriteLine(playAction.played ? "You did it!" : "Nope...");
+                        playAction.WaitForKeyInput(KeyActions);
+                        Console.WriteLine(playAction.Played ? "You did it!" : "Nope...");
                     }
-                    while (!playAction.played);
+                    while (!playAction.Played);
                 }
             }
         }
