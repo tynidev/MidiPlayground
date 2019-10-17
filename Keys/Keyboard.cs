@@ -66,6 +66,29 @@ namespace Keys
             inDevice.Reset();
         }
 
+        public void StartRecording(InputDevice inDevice, IEnumerable<IKeyAction> actions)
+        {
+            inDevice.ChannelMessageReceived += delegate (object sender, ChannelMessageEventArgs e)
+            {
+                var command = e.Message.Command;
+                var key = e.Message.Data1;
+
+                switch (command)
+                {
+                    case ChannelCommand.NoteOn:
+                        this[key].On = true;
+                        break;
+                    case ChannelCommand.NoteOff:
+                        this[key].On = false;
+                        break;
+                }
+
+                foreach (var foo in actions)
+                    foo.Action(this, this[key], command);
+            };
+            inDevice.StartRecording();
+        }
+
         public IEnumerable<Key> OnKeys => Keys.Where(k => k.Value.On == true).Select(k => k.Value);
 
         public Key this[int index]
