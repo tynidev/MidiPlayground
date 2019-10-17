@@ -15,10 +15,10 @@ namespace MidiPlayground
         static void Main(string[] args)
         {
             var chords = new Dictionary<string, List<Keys.Key>>();
-            Chords.GetChordForEveryChromaticNote((noteName, i) =>
+            Generator.ForEveryChromaticNote((string noteName, int midiNoteValue) =>
             {
-                chords.Add(noteName + " Root Position", Chords.GenerateChord(i, Constants.TriadMajorRootPos));
-                chords.Add(noteName + " Minor Root Position", Chords.GenerateChord(i, Constants.TriadMinorRootPos));
+                chords.Add(noteName + " Root Position", Generator.GenerateChord(midiNoteValue, Constants.TriadMajorRootPos));
+                chords.Add(noteName + " Minor Root Position", Generator.GenerateChord(midiNoteValue, Constants.TriadMinorRootPos));
 
                 //chords.Add(noteName + " 1st Inversion", Chords.GenerateChord(i, Constants.TriadMajor1stInv));
                 //chords.Add(noteName + " Minor 1st Inversion", Chords.GenerateChord(i, Constants.TriadMinor1stInv));
