@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Sanford.Multimedia.Midi;
@@ -12,6 +13,7 @@ namespace Keys
         protected bool breakOnError = false;
         protected bool ready = false;
         protected int idx = 0;
+        protected DateTime lastKeyPress = DateTime.MinValue;
 
         public bool Played = false;
 
@@ -33,9 +35,15 @@ namespace Keys
                 if (ready)
                     return;
 
+                if ((DateTime.Now - lastKeyPress).TotalMilliseconds <= 500)
+                {   // Don't accept key press if it happens nearly simultaneously 
+                    return;
+                }
+
                 if ((absolute && (key.AbsolutePitch == melody.ElementAt(idx).AbsolutePitch)) ||
                    (!absolute && (key.RelativePitch == melody.ElementAt(idx).RelativePitch)))
                 {   // If we played the correct note in the sequence then move to next note
+                    lastKeyPress = DateTime.Now;
                     idx++;
                     if (idx == melody.Count)
                     {   // If we've played all the notes in the sequence then end
