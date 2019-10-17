@@ -61,14 +61,14 @@ namespace MidiPlayground
 
                 while (true)
                 {
-                    int pitch = rand.Next(keyboard.BottomKey, keyboard.TopKey);
-                    Keys.Key key = new Keys.Key(pitch);
+                    int chordIdx = rand.Next(0, Chords.ChordMaps.Count);
+                    var chord = Chords.ChordMaps.ElementAt(chordIdx);
 
-                    Console.WriteLine($"Play a {key.Name}{key.Register}");
+                    Console.WriteLine($"Play {chord.Key}");
 
-                    var playAction = new PlayNoteAction(key);
+                    var playAction = new PlayChordAction(chord.Value);
                     KeyActions.Add(playAction);
-                    while (playAction.called == 0) { Thread.Sleep(10); };
+                    while (!playAction.ready) { Thread.Sleep(10); };
                     KeyActions.Clear();
 
                     Console.WriteLine(playAction.played ? "You did it!" : "Nope...");

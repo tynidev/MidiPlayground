@@ -19,6 +19,11 @@ namespace Keys
             return (int)name + (register * 12);
         }
 
+        public static Note ToNote(int pitch)
+        {
+            return (Note)(pitch % 12);
+        }
+
         public readonly int AbsolutePitch = 0;
         public Note Name => (Note)RelativePitch;
         public int RelativePitch => AbsolutePitch % 12;
