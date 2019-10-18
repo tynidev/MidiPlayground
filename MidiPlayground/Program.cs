@@ -14,6 +14,11 @@ namespace MidiPlayground
         public int Picked = 0;
     }
 
+    /*
+verovio.exe test.xml -r ../../data -o test.svg --adjust-page-height --page-width=500
+inkscape.exe --without-gui --file test.svg --export-png=test.png
+     * */
+
     class Program
     {
         private static Keyboard keyboard = new Keyboard();
