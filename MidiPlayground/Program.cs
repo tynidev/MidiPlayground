@@ -28,7 +28,7 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
         static void Main(string[] args)
         {
-            foreach (var key in new List<Scale>() { new Scale(Note.B, Accidental.s, Mode.Major) } )
+            foreach (var key in new List<Scale>() { new Scale(Note.b, Accidental.s, Mode.Major) } )
             {
                 string notes = "";
                 for(int i = 0; i < 8; i++)
@@ -46,15 +46,15 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
             var cMajorTrebble = new List<Keys.Key>()
             {
-                new Keys.Key(Note.C, 4),
-                new Keys.Key(Note.E, 4),
-                new Keys.Key(Note.G, 4),
+                new Keys.Key(Note.c, 4),
+                new Keys.Key(Note.e, 4),
+                new Keys.Key(Note.g, 4),
             };
             var cMajorClef = new List<Keys.Key>()
             {
-                new Keys.Key(Note.C, 3),
-                new Keys.Key(Note.E, 3),
-                new Keys.Key(Note.G, 3),
+                new Keys.Key(Note.c, 3),
+                new Keys.Key(Note.e, 3),
+                new Keys.Key(Note.g, 3),
             };
 
             var xml = OutputMei.Song("", 4, 4, "0", "major", 

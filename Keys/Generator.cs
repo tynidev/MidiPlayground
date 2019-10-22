@@ -16,11 +16,11 @@ namespace Keys
 
                 string noteName = note.ToString();
 
-                if (note == Note.DFlat) noteName = "CSharp";
-                if (note == Note.DSharp) noteName = "EFlat";
-                if (note == Note.GFlat) noteName = "FSharp";
-                if (note == Note.GSharp) noteName = "AFlat";
-                if (note == Note.ASharp) noteName = "BFlat";
+                if (note == Note.dFlat) noteName = "CSharp";
+                if (note == Note.dSharp) noteName = "EFlat";
+                if (note == Note.ff) noteName = "FSharp";
+                if (note == Note.gs) noteName = "AFlat";
+                if (note == Note.@as) noteName = "BFlat";
 
                 GenerateSequence(noteName, i);
             }
