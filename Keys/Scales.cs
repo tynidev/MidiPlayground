@@ -63,11 +63,12 @@ namespace Keys
 
         public string GetNoteName(int interval)
         {
+            int[] CMajor = new int[] { 0, 2, 4, 5, 7, 9, 11, 12 };
             interval = interval % 7;
-            int[] CMajor = new int[] { 0, 2, 4, 5, 7, 9, 11, 12};
-            int semitonesFromC = (Notes[interval].SemitonesFromRoot + RootOffset) % 12;
 
+            int semitonesFromC = (Notes[interval].SemitonesFromRoot + RootOffset) % 12;
             int intervalInC = (interval + NoteOffset) % 7;
+
             if (semitonesFromC == 11 && intervalInC == 0)
                 intervalInC = 7;
 
@@ -86,8 +87,8 @@ namespace Keys
 
     public class Scales
     {
-        public static int[] Major = new int[] { 0, 2, 2, 1, 2, 2, 2 };
-        public static int[] Minor = new int[] { 0, 2, 1, 2, 2, 1, 2 };
+        public static int[] Major = new int[] { 0, 2, 2, 1, 2, 2, 2, 1 };
+        public static int[] Minor = new int[] { 0, 2, 1, 2, 2, 1, 2, 2 };
 
         public static Scale[] MajorKeys = new Scale[] {
             new Scale ( 0, 0, Major), // C
