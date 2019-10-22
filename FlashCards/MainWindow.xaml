@@ -6,9 +6,9 @@
     xmlns:Controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls.WebView"
     xmlns:local="clr-namespace:FlashCards"
     mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="800" Width="800">
     <Grid>
-        <Controls:WebView x:Name="webView" HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="772"/>
+        <Controls:WebView x:Name="webView" HorizontalAlignment="Left" Height="500" Margin="10,10,0,0" VerticalAlignment="Top" Width="772"/>
     </Grid>
 </Window>
     

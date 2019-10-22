@@ -27,7 +27,7 @@ namespace Keys
         public readonly int AbsolutePitch = 0;
         public Note Name => (Note)RelativePitch;
         public int RelativePitch => AbsolutePitch % 12;
-        public int Register => (AbsolutePitch / 12) - 1;
+        public int Register => (AbsolutePitch / 12);
 
         private bool on = false;
         public bool On 

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Keys;
 using System.Diagnostics;
+using Sanford.Multimedia;
+using System.IO;
 
 namespace MidiPlayground
 {
@@ -27,14 +29,49 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
         static void Main(string[] args)
         {
+            var k = new Scale(1, 0, Scales.Major); // C Flat
+            k.GetNoteName(6);
+
+            foreach (var key in Scales.Keys)
+            {
+                string notes = "";
+                for(int i = 0; i < 8; i++)
+                {
+                    notes += key.GetNoteName(i) + " ";
+                }
+                Console.WriteLine(notes);
+                Console.WriteLine();
+            }
+            Console.ReadKey();
+
+            var cMajorTrebble = new List<Keys.Key>()
+            {
+                new Keys.Key(Note.C, 4),
+                new Keys.Key(Note.E, 4),
+                new Keys.Key(Note.G, 4),
+            };
+            var cMajorClef = new List<Keys.Key>()
+            {
+                new Keys.Key(Note.C, 3),
+                new Keys.Key(Note.E, 3),
+                new Keys.Key(Note.G, 3),
+            };
+
+            var xml = OutputMei.Song("", 4, 4, "0", "major", 
+                OutputMei.Measure(1, 
+                    OutputMei.Chord(cMajorTrebble, OutputMei.NoteValue.Quarter), 
+                    OutputMei.Chord(cMajorClef, OutputMei.NoteValue.Quarter)));
+
+            File.WriteAllText(@"C:\Users\tyni\Desktop\test.xml", xml);
+
             var chords = new Dictionary<string, List<Keys.Key>>();
             Generator.ForEveryChromaticNote((string noteName, int midiNoteValue) =>
             {
-                chords.Add(noteName + " Root Position", Generator.GenerateChord(midiNoteValue, Constants.TriadMajorRootPos));
-                //chords.Add(noteName + " Minor Root Position", Generator.GenerateChord(midiNoteValue, Constants.TriadMinorRootPos));
+                chords.Add(noteName + "", Generator.GenerateChord(midiNoteValue, Constants.TriadMajorRootPos));
+                chords.Add(noteName + " Minor", Generator.GenerateChord(midiNoteValue, Constants.TriadMinorRootPos));
 
-                //chords.Add(noteName + " 1st Inversion", Chords.GenerateChord(i, Constants.TriadMajor1stInv));
-                //chords.Add(noteName + " Minor 1st Inversion", Chords.GenerateChord(i, Constants.TriadMinor1stInv));
+                //chords.Add(noteName + " 1st Inversion", Generator.GenerateChord(midiNoteValue, Constants.TriadMajor1stInv));
+                //chords.Add(noteName + " Minor 1st Inversion", Generator.GenerateChord(midiNoteValue, Constants.TriadMinor1stInv));
 
                 //chords.Add(noteName + " 2nd Inversion", Chords.GenerateChord(i, Constants.TriadMajor2ndInv));
                 //chords.Add(noteName + " Minor 2nd Inversion", Chords.GenerateChord(i, Constants.TriadMinor2ndInv));
@@ -77,7 +114,7 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
                     card.Picked++;
 
                     Console.WriteLine($"Play {card.Prompt}");
-                    var playAction = new PlayNote(chords[card.Prompt][0]);
+                    var playAction = new PlayChord(chords[card.Prompt]);
                     Stopwatch watch = new Stopwatch();
                     watch.Start();
                     do

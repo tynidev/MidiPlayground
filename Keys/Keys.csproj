@@ -54,10 +54,15 @@
     <Compile Include="Actions\PlayInterval.cs" />
     <Compile Include="Actions\PlayChord.cs" />
     <Compile Include="Actions\PlayNote.cs" />
+    <Compile Include="OutputMei.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scales.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="scales.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
