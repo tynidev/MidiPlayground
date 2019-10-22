@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Keys;
 using System.Diagnostics;
-using Sanford.Multimedia;
 using System.IO;
 
 namespace MidiPlayground
@@ -29,15 +28,16 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
         static void Main(string[] args)
         {
-            var k = new Scale(1, 0, Scales.Major); // C Flat
-            k.GetNoteName(6);
-
-            foreach (var key in Scales.Keys)
+            foreach (var key in new List<Scale>() { new Scale(Note.B, Accidental.s, Mode.Major) } )
             {
                 string notes = "";
                 for(int i = 0; i < 8; i++)
                 {
-                    notes += key.GetNoteName(i) + " ";
+                    var a = Accidental.n;
+                    var n = key.GetNoteName(i, out a);
+
+                    notes += a != Accidental.n ? n.ToString() + a.ToString() : n.ToString();
+                    notes += " ";
                 }
                 Console.WriteLine(notes);
                 Console.WriteLine();

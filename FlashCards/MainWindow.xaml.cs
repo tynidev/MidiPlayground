@@ -16,8 +16,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Keys;
 using Microsoft.Toolkit.Wpf.UI.Controls;
-using Sanford.Multimedia;
-using Sanford.Multimedia.Midi.UI;
 
 namespace FlashCards
 {
