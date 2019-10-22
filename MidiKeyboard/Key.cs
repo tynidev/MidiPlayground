@@ -1,5 +1,7 @@
 ﻿
-namespace Keys
+using Sanford.Multimedia;
+
+namespace MidiKeyboard
 {
     public class Key
     {

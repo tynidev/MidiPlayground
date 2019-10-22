@@ -2,7 +2,7 @@
 using System.Threading;
 using Sanford.Multimedia.Midi;
 
-namespace Keys
+namespace MidiKeyboard
 {
     public class PlayNote : IKeyAction
     {

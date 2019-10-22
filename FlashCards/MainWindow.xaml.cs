@@ -33,23 +33,25 @@ namespace FlashCards
         {
             base.OnInitialized(e);
 
-            var cMajorTrebble = new List<Keys.Key>()
-            {
-                new Keys.Key(Note.c, 4),
-                new Keys.Key(Note.e, 4),
-                new Keys.Key(Note.g, 4),
-            };
-            var cMajorClef = new List<Keys.Key>()
-            {
-                new Keys.Key(Note.c, 3),
-                new Keys.Key(Note.e, 3),
-                new Keys.Key(Note.g, 3),
-            };
+            //var cMajorTrebble = new List<Keys.Key>()
+            //{
+            //    new Keys.Key(Note.c, 4),
+            //    new Keys.Key(Note.e, 4),
+            //    new Keys.Key(Note.g, 4),
+            //};
+            //var cMajorClef = new List<Keys.Key>()
+            //{
+            //    new Keys.Key(Note.c, 3),
+            //    new Keys.Key(Note.e, 3),
+            //    new Keys.Key(Note.g, 3),
+            //};
 
-            var xml = OutputMei.Song("", 4, 4, "0", "major",
-                OutputMei.Measure(1,
-                    OutputMei.Chord(cMajorTrebble, OutputMei.NoteValue.Quarter),
-                    OutputMei.Chord(cMajorClef, OutputMei.NoteValue.Quarter)));
+            //var xml = OutputMei.Song("", 4, 4, "0", "major",
+            //    OutputMei.Measure(1,
+            //        OutputMei.Chord(cMajorTrebble, OutputMei.NoteValue.Quarter),
+            //        OutputMei.Chord(cMajorClef, OutputMei.NoteValue.Quarter)));
+
+            var xml = "";
 
             DisplayMei(xml);
         }

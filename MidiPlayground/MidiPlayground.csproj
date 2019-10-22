@@ -85,6 +85,10 @@
       <Project>{6863beac-1613-4dab-bd9e-3c51708f2bd0}</Project>
       <Name>Keys</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MidiKeyboard\MidiKeyboard.csproj">
+      <Project>{7c4cb4c5-3c47-4cf7-9363-f352f924f475}</Project>
+      <Name>MidiKeyboard</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -19,9 +19,9 @@ namespace Keys
 
         }
 
-        public static string Chord(List<Key> chord, NoteValue length, bool dotted = false, string color = "#000000")
+        public static string Chord(List<int> chord, NoteValue length, bool dotted = false, string color = "#000000")
         {
-            var notes = string.Join("\r\n", chord.Select(c => $"<note pnum='{c.AbsolutePitch}' />"));
+            var notes = string.Join("\r\n", chord.Select(c => $"<note pnum='{c}' />"));
             return
 $@"<chord dur='{(int)length}' color='{color}'>
 {notes}

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using Sanford.Multimedia.Midi;
 
-namespace Keys
+namespace MidiKeyboard
 {
     public class PlayMelody : IKeyAction
     {

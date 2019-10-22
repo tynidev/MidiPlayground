@@ -1,7 +1,7 @@
 ﻿using Sanford.Multimedia.Midi;
 using System.Collections.Generic;
 
-namespace Keys
+namespace MidiKeyboard
 {
     public interface IKeyAction
     {

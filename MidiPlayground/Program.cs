@@ -28,9 +28,42 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
         static void Main(string[] args)
         {
+            List<ScaleNote> group = new List<ScaleNote>()
+            {
+                new ScaleNote(){interval = 0, register = 4},
+                new ScaleNote(){interval = 3, register = 4},
+                new ScaleNote(){interval = 5, register = 5},
+            };
+
+            var cMajor = new Scale(Note.c);
+            var gMinor = new Scale(Note.g, mode: Mode.Minor);
+
+            var notes = "";
+            foreach(var ns in cMajor.SelectNotes(group))
+            {
+                var a = Accidental.n;
+                var n = cMajor.GetNoteName(ns.interval, out a);
+                notes += a != Accidental.n ? n.ToString() + a.ToString() : n.ToString();
+                notes += " ";
+            }
+            Console.WriteLine(notes);
+            Console.WriteLine();
+
+            notes = "";
+            foreach (var ns in gMinor.SelectNotes(cMajor.SelectNotes(group)))
+            {
+                var a = Accidental.n;
+                var n = gMinor.GetNoteName(ns.interval, out a);
+                notes += a != Accidental.n ? n.ToString() + a.ToString() : n.ToString();
+                notes += " ";
+            }
+            Console.WriteLine(notes);
+            Console.WriteLine();
+
+            Console.ReadKey();
+
             foreach (var key in new List<Scale>() { new Scale(Note.b, Accidental.s, Mode.Major) } )
             {
-                string notes = "";
                 for(int i = 0; i < 8; i++)
                 {
                     var a = Accidental.n;

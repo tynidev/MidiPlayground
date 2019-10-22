@@ -58,7 +58,7 @@ namespace Keys
         private static int[] Major = new int[] { 0, 2, 2, 1, 2, 2, 2, 1 };
         private static int[] Minor = new int[] { 0, 2, 1, 2, 2, 1, 2, 2 };
 
-        public Scale(Note note, Accidental accidental, Mode mode)
+        public Scale(Note note, Accidental accidental = Accidental.n, Mode mode = Mode.Major)
         {
             int offset = (int)note + (int)accidental;
             var noteOffsets = new Dictionary<Note, int>()
