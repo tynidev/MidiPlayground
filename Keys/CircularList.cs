@@ -9,7 +9,7 @@ namespace Keys
 {
     public class CircularList<T> : IList<T>
     {
-        protected List<T> list = new List<T>();
+        public List<T> list = new List<T>();
         protected int position = 0;
         public int Position
         {

@@ -97,7 +97,8 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
             //Console.ReadKey();
 
-            var k = Keys.Keys.CircleOf5ths[0];
+            var circle = new CircleOf5ths();
+            var k = circle[0];
             k.Mode = Mode.Minor;
 
             var aChord = k.SelectNotes(new List<KeyNote>()
@@ -109,8 +110,11 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
             Console.WriteLine(GetNoteNames(k, aChord.Select(o => o.interval).ToList()));
 
-            foreach (var key in Keys.Keys.CircleOf5ths)
+            foreach (var key in circle)
             {
+                key.Mode = Mode.Major;
+                Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+                key.Mode = Mode.Minor;
                 Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
                 Console.WriteLine();
             }

@@ -37,6 +37,14 @@ namespace Keys
     {
         Major = 0,
         Minor = 5,
+
+        Ionian = 0,
+        Dorian = 1,
+        Phrygian = 2,
+        Lydian = 3,
+        Mixolydian = 4,
+        Aeolian = 5,
+        Locrian = 6,
     }
 
     public class KeyNote
@@ -51,7 +59,7 @@ namespace Keys
 
     public class Key : CircularList<KeyNote>
     {
-        public Mode mode = Mode.Major;
+        private Mode mode = Mode.Major;
         public Mode Mode
         {
             get
@@ -158,23 +166,28 @@ namespace Keys
         }
     }
 
-    public class Keys
+    public class CircleOf5ths : CircularList<Key>
     {
-        public static CircularList<Key> CircleOf5ths = new CircularList<Key>()
+        public CircleOf5ths()
         {
-            new Key(Note.c),
-            new Key(Note.g),
-            new Key(Note.d),
-            new Key(Note.a),
-            new Key(Note.e),
-            new Key(Note.b),
-            new Key(Note.f, Accidental.s),
-            new Key(Note.g, Accidental.f),
-            new Key(Note.d, Accidental.f),
-            new Key(Note.a, Accidental.f),
-            new Key(Note.e, Accidental.f),
-            new Key(Note.b, Accidental.f),
-            new Key(Note.f),
-        };
+            this.list = (new CircularList<Key>()
+            {
+                new Key(Note.c),
+                
+                new Key(Note.g),
+                new Key(Note.d),
+                new Key(Note.a),
+                new Key(Note.e),
+                new Key(Note.b),
+                
+                new Key(Note.f, Accidental.s), new Key(Note.g, Accidental.f),
+
+                new Key(Note.d, Accidental.f),
+                new Key(Note.a, Accidental.f),
+                new Key(Note.e, Accidental.f),
+                new Key(Note.b, Accidental.f),
+                new Key(Note.f),
+            }).list;
+        }
     }
 }
