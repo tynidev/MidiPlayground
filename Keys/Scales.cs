@@ -24,7 +24,7 @@ namespace Keys
         d = 2,
         dSharp = 3,
         eFlat = 3, 
-        e = 3,
+        e = 4,
         f = 5,
         fSharp = 6,
         ff = 6,
@@ -55,11 +55,19 @@ namespace Keys
 
     public class Scale
     {
+        public readonly Mode Mode = Mode.Major;
+
+        private int NoteOffset;
+        private int RootOffset;
+        private ScaleNote[] Notes;
+
         private static int[] Major = new int[] { 0, 2, 2, 1, 2, 2, 2, 1 };
         private static int[] Minor = new int[] { 0, 2, 1, 2, 2, 1, 2, 2 };
 
         public Scale(Note note, Accidental accidental = Accidental.n, Mode mode = Mode.Major)
         {
+            this.Mode = mode;
+
             int offset = (int)note + (int)accidental;
             var noteOffsets = new Dictionary<Note, int>()
             {
@@ -94,10 +102,6 @@ namespace Keys
                 };
             }
         }
-
-        private int NoteOffset;
-        private int RootOffset;
-        private ScaleNote[] Notes;
 
         public ScaleNote SelectNote(ScaleNote noteToSelect)
         {
@@ -143,38 +147,38 @@ namespace Keys
 
     public class Scales
     {
-        public static Scale[] MajorKeys = new Scale[] {
-            new Scale (Note.c, Accidental.n, Mode.Major),
-            new Scale (Note.g, Accidental.n, Mode.Major),
-            new Scale (Note.d, Accidental.n, Mode.Major),
-            new Scale (Note.a, Accidental.n, Mode.Major),
-            new Scale (Note.e, Accidental.n, Mode.Major),
-            new Scale (Note.b, Accidental.n, Mode.Major),
-            new Scale (Note.f, Accidental.n, Mode.Major),
-            new Scale (Note.b, Accidental.f, Mode.Major),
-            new Scale (Note.e, Accidental.f, Mode.Major),
-            new Scale (Note.a, Accidental.f, Mode.Major),
-            new Scale (Note.d, Accidental.f, Mode.Major),
-            new Scale (Note.g, Accidental.f, Mode.Major),
-            new Scale (Note.f, Accidental.s, Mode.Major),
-            new Scale (Note.c, Accidental.s, Mode.Major),
-            new Scale (Note.c, Accidental.f, Mode.Major),
+        public static Dictionary<string, Scale> CircleOf5thsMajor = new Dictionary<string, Scale>()
+        {
+            {  "0", new Scale(Note.c) },
+            { "1s", new Scale(Note.g) },
+            { "2s", new Scale(Note.d) },
+            { "3s", new Scale(Note.a) },
+            { "4s", new Scale(Note.e) },
+            { "5s", new Scale(Note.b) },
+            { "6s", new Scale(Note.f, Accidental.s) },
+            { "1f", new Scale(Note.f) },
+            { "2f", new Scale(Note.b, Accidental.f) },
+            { "3f", new Scale(Note.e, Accidental.f) },
+            { "4f", new Scale(Note.a, Accidental.f) },
+            { "5f", new Scale(Note.d, Accidental.f) },
+            { "6f", new Scale(Note.g, Accidental.f) },
         };
 
-        public static Scale[] MinorKeys = new Scale[] {
-            new Scale (Note.a, Accidental.n, Mode.Minor),
-            new Scale (Note.e, Accidental.n, Mode.Minor),
-            new Scale (Note.b, Accidental.n, Mode.Minor),
-            new Scale (Note.f, Accidental.s, Mode.Minor),
-            new Scale (Note.c, Accidental.s, Mode.Minor),
-            new Scale (Note.g, Accidental.s, Mode.Minor),
-            new Scale (Note.d, Accidental.n, Mode.Minor),
-            new Scale (Note.g, Accidental.n, Mode.Minor),
-            new Scale (Note.c, Accidental.n, Mode.Minor),
-            new Scale (Note.f, Accidental.n, Mode.Minor),
-            new Scale (Note.b, Accidental.f, Mode.Minor),
-            new Scale (Note.e, Accidental.f, Mode.Minor),
-            new Scale (Note.d, Accidental.s, Mode.Minor),
+        public static Dictionary<string, Scale> CircleOf5thsMinor = new Dictionary<string, Scale>()
+        {
+            {  "0", new Scale (Note.a, mode: Mode.Minor)},
+            { "1s", new Scale (Note.e, mode: Mode.Minor)},
+            { "2s", new Scale (Note.b, mode: Mode.Minor)},
+            { "3s", new Scale (Note.f, Accidental.s, Mode.Minor)},
+            { "4s", new Scale (Note.c, Accidental.s, Mode.Minor)},
+            { "5s", new Scale (Note.g, Accidental.s, Mode.Minor)},
+            { "6s", new Scale (Note.d, Accidental.s, Mode.Minor)},
+            { "1f", new Scale (Note.d, mode: Mode.Minor)},
+            { "2f", new Scale (Note.g, mode: Mode.Minor)},
+            { "3f", new Scale (Note.c, mode: Mode.Minor)},
+            { "4f", new Scale (Note.f, mode: Mode.Minor)},
+            { "5f", new Scale (Note.b, Accidental.f, Mode.Minor)},
+            { "6f", new Scale (Note.e, Accidental.f, Mode.Minor)},
         };
     }
 }

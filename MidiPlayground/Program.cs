@@ -29,48 +29,65 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
         static void Main(string[] args)
         {
-            List<ScaleNote> group = new List<ScaleNote>()
+            //List<ScaleNote> group = new List<ScaleNote>()
+            //{
+            //    new ScaleNote(){interval = 0, register = 4},
+            //    new ScaleNote(){interval = 3, register = 4},
+            //    new ScaleNote(){interval = 5, register = 5},
+            //};
+
+            //var cMajor = new Scale(Note.c);
+            //var gMinor = new Scale(Note.g, mode: Mode.Minor);
+
+            //var notes = "";
+            //foreach(var ns in cMajor.SelectNotes(group))
+            //{
+            //    var a = Accidental.n;
+            //    var n = cMajor.GetNoteName(ns.interval, out a);
+            //    notes += a != Accidental.n ? n.ToString() + a.ToString() : n.ToString();
+            //    notes += " ";
+            //}
+            //Console.WriteLine(notes);
+            //Console.WriteLine();
+
+            //notes = "";
+            //foreach (var ns in gMinor.SelectNotes(cMajor.SelectNotes(group)))
+            //{
+            //    var a = Accidental.n;
+            //    var n = gMinor.GetNoteName(ns.interval, out a);
+            //    notes += a != Accidental.n ? n.ToString() + a.ToString() : n.ToString();
+            //    notes += " ";
+            //}
+            //Console.WriteLine(notes);
+            //Console.WriteLine();
+
+            //Console.ReadKey();
+
+            foreach (var key in Scales.CircleOf5thsMinor)
             {
-                new ScaleNote(){interval = 0, register = 4},
-                new ScaleNote(){interval = 3, register = 4},
-                new ScaleNote(){interval = 5, register = 5},
-            };
-
-            var cMajor = new Scale(Note.c);
-            var gMinor = new Scale(Note.g, mode: Mode.Minor);
-
-            var notes = "";
-            foreach(var ns in cMajor.SelectNotes(group))
-            {
-                var a = Accidental.n;
-                var n = cMajor.GetNoteName(ns.interval, out a);
-                notes += a != Accidental.n ? n.ToString() + a.ToString() : n.ToString();
-                notes += " ";
-            }
-            Console.WriteLine(notes);
-            Console.WriteLine();
-
-            notes = "";
-            foreach (var ns in gMinor.SelectNotes(cMajor.SelectNotes(group)))
-            {
-                var a = Accidental.n;
-                var n = gMinor.GetNoteName(ns.interval, out a);
-                notes += a != Accidental.n ? n.ToString() + a.ToString() : n.ToString();
-                notes += " ";
-            }
-            Console.WriteLine(notes);
-            Console.WriteLine();
-
-            Console.ReadKey();
-
-            foreach (var key in new List<Scale>() { new Scale(Note.b, Accidental.s, Mode.Major) } )
-            {
-                for(int i = 0; i < 8; i++)
+                var notes = "";
+                for (int i = 0; i < 8; i++)
                 {
                     var a = Accidental.n;
-                    var n = key.GetNoteName(i, out a);
+                    var n = key.Value.GetNoteName(i, out a);
 
-                    notes += a != Accidental.n ? n.ToString() + a.ToString() : n.ToString();
+                    var mod = "";
+                    switch(a)
+                    {
+                        case Accidental.s:
+                            mod = "#";
+                            break;
+                        case Accidental.x:
+                            mod = "x";
+                            break;
+                        case Accidental.f:
+                            mod = "-";
+                            break;
+                        case Accidental.ff:
+                            mod = "--";
+                            break;
+                    }
+                    notes += n.ToString() + mod;
                     notes += " ";
                 }
                 Console.WriteLine(notes);
