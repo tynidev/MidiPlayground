@@ -27,6 +27,40 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
         private static List<IKeyAction> KeyActions = new List<IKeyAction>();
 
+        private static string GetNoteName(Keys.Key key, int i)
+        {
+            var a = Accidental.n;
+            var n = key.GetNoteName(i, out a);
+
+            var mod = "";
+            switch (a)
+            {
+                case Accidental.s:
+                    mod = "#";
+                    break;
+                case Accidental.x:
+                    mod = "x";
+                    break;
+                case Accidental.f:
+                    mod = "-";
+                    break;
+                case Accidental.ff:
+                    mod = "--";
+                    break;
+            }
+            return n.ToString() + mod;
+        }
+
+        private static string GetNoteNames(Keys.Key key, List<int> notes)
+        {
+            string name = "";
+            for(int i = 0; i < notes.Count(); i++)
+            {
+                name += GetNoteName(key, notes[i]) + " ";
+            }
+            return name;
+        }
+
         static void Main(string[] args)
         {
             //List<ScaleNote> group = new List<ScaleNote>()
@@ -63,49 +97,36 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
             //Console.ReadKey();
 
-            foreach (var key in Scales.CircleOf5thsMinor)
-            {
-                var notes = "";
-                for (int i = 0; i < 8; i++)
-                {
-                    var a = Accidental.n;
-                    var n = key.Value.GetNoteName(i, out a);
+            var k = Keys.Keys.CircleOf5ths[0];
+            k.Mode = Mode.Minor;
 
-                    var mod = "";
-                    switch(a)
-                    {
-                        case Accidental.s:
-                            mod = "#";
-                            break;
-                        case Accidental.x:
-                            mod = "x";
-                            break;
-                        case Accidental.f:
-                            mod = "-";
-                            break;
-                        case Accidental.ff:
-                            mod = "--";
-                            break;
-                    }
-                    notes += n.ToString() + mod;
-                    notes += " ";
-                }
-                Console.WriteLine(notes);
+            var aChord = k.SelectNotes(new List<KeyNote>()
+            {
+                new KeyNote(){ interval = 0 },
+                new KeyNote(){ interval = 2 },
+                new KeyNote(){ interval = 4 },
+            });
+
+            Console.WriteLine(GetNoteNames(k, aChord.Select(o => o.interval).ToList()));
+
+            foreach (var key in Keys.Keys.CircleOf5ths)
+            {
+                Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
                 Console.WriteLine();
             }
             Console.ReadKey();
 
             var cMajorTrebble = new List<int>()
             {
-                Key.ToPitch((int)Note.c, 4),
-                Key.ToPitch((int)Note.e, 4),
-                Key.ToPitch((int)Note.g, 4),
+                MidiKeyboard.Key.ToPitch((int)Note.c, 4),
+                MidiKeyboard.Key.ToPitch((int)Note.e, 4),
+                MidiKeyboard.Key.ToPitch((int)Note.g, 4),
             };
             var cMajorClef = new List<int>()
             {
-                Key.ToPitch((int)Note.c, 3),
-                Key.ToPitch((int)Note.e, 3),
-                Key.ToPitch((int)Note.g, 3),
+                MidiKeyboard.Key.ToPitch((int)Note.c, 3),
+                MidiKeyboard.Key.ToPitch((int)Note.e, 3),
+                MidiKeyboard.Key.ToPitch((int)Note.g, 3),
             };
 
             var xml = OutputMei.Song("", 4, 4, "0", "major", 
@@ -115,7 +136,7 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
             File.WriteAllText(@"C:\Users\tyni\Desktop\test.xml", xml);
 
-            var chords = new Dictionary<string, List<Key>>();
+            var chords = new Dictionary<string, List<MidiKeyboard.Key>>();
 
             if (InputDevice.DeviceCount < 1)
             {

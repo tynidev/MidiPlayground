@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace Keys
 {
-    class CircularList<T> : IList<T>
+    public class CircularList<T> : IList<T>
     {
-        private List<T> list = new List<T>();
-        private int position = 0;
+        protected List<T> list = new List<T>();
+        protected int position = 0;
         public int Position
         {
             get

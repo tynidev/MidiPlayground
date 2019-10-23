@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Schema;
 
 namespace Keys
 {
@@ -19,14 +15,14 @@ namespace Keys
     public enum Note
     {
         c = 0,
-        cSharp = 1,
+        cs = 1,
         dFlat = 1,
         d = 2,
-        dSharp = 3,
+        ds = 3,
         eFlat = 3, 
         e = 4,
         f = 5,
-        fSharp = 6,
+        fs = 6,
         ff = 6,
         g = 7,
         gs = 8,
@@ -39,11 +35,11 @@ namespace Keys
 
     public enum Mode
     {
-        Major,
-        Minor
+        Major = 0,
+        Minor = 5,
     }
 
-    public class ScaleNote
+    public class KeyNote
     {
         public char name;
         public int SemitonesFromRoot;
@@ -53,20 +49,37 @@ namespace Keys
         public Accidental accidental = Accidental.n;
     }
 
-    public class Scale
+    public class Key : CircularList<KeyNote>
     {
-        public readonly Mode Mode = Mode.Major;
+        public Mode mode = Mode.Major;
+        public Mode Mode
+        {
+            get
+            {
+                return this.mode;
+            }
+            set
+            {
+                this.mode = value;
+                this.position = 0;
+                this.Rotate((int)this.mode);
+            }
+        }
 
         private int NoteOffset;
         private int RootOffset;
-        private ScaleNote[] Notes;
 
         private static int[] Major = new int[] { 0, 2, 2, 1, 2, 2, 2, 1 };
-        private static int[] Minor = new int[] { 0, 2, 1, 2, 2, 1, 2, 2 };
 
-        public Scale(Note note, Accidental accidental = Accidental.n, Mode mode = Mode.Major)
+        public List<KeyNote> Notes
         {
-            this.Mode = mode;
+            get { return this.list;  }
+            private set { this.list = value; }
+        }
+
+        public Key(Note note, Accidental accidental = Accidental.n)
+        {
+            this.mode = Mode.Major;
 
             int offset = (int)note + (int)accidental;
             var noteOffsets = new Dictionary<Note, int>()
@@ -80,35 +93,35 @@ namespace Keys
                 { Note.b, 6 },
             };
 
-            this.init(offset, noteOffsets[note], mode == Mode.Major ? Major : Minor);
+            this.init(offset, noteOffsets[note], Major);
         }
 
         private void init(int offset, int noteOffset, int[] key)
         {
             this.RootOffset = offset;
             this.NoteOffset = noteOffset;
-            Notes = new ScaleNote[7];
+            Notes = new List<KeyNote>(7);
             var names = new char[7] { 'c', 'd', 'e', 'f', 'g', 'a', 'b' };
             int pitch = 0;
             for(int i = 0; i < 7; i++)
             {
                 pitch += key[i];
                 var noteNameIdx = (noteOffset + i) % 7;
-                Notes[i] = new ScaleNote()
+                Notes.Add(new KeyNote()
                 {
                     name = names[noteNameIdx],
                     SemitonesFromRoot = pitch,
                     interval = i
-                };
+                });
             }
         }
 
-        public ScaleNote SelectNote(ScaleNote noteToSelect)
+        public KeyNote SelectNote(KeyNote noteToSelect)
         {
-            int length = Notes.Length;
-            var note = Notes[noteToSelect.interval % length];
+            int length = Notes.Count();
+            var note = Notes[(this.Position + noteToSelect.interval) % length];
 
-            return new ScaleNote()
+            return new KeyNote()
             {
                 name = note.name,
                 SemitonesFromRoot = note.SemitonesFromRoot + (int)noteToSelect.accidental,
@@ -119,7 +132,7 @@ namespace Keys
             };
         }
 
-        public List<ScaleNote> SelectNotes(List<ScaleNote> notesToSelect)
+        public List<KeyNote> SelectNotes(List<KeyNote> notesToSelect)
         {
             return notesToSelect.Select(n => SelectNote(n)).ToList();
         }
@@ -128,7 +141,7 @@ namespace Keys
         {
             int[] CMajor = new int[] { 0, 2, 4, 5, 7, 9, 11, 12 };
 
-            intervalFromRoot = intervalFromRoot % 7;
+            intervalFromRoot = (intervalFromRoot + this.Position) % 7;
             int semitonesFromRoot = Notes[intervalFromRoot].SemitonesFromRoot;
 
             int intervalInC = (intervalFromRoot + NoteOffset) % 7;
@@ -145,40 +158,23 @@ namespace Keys
         }
     }
 
-    public class Scales
+    public class Keys
     {
-        public static Dictionary<string, Scale> CircleOf5thsMajor = new Dictionary<string, Scale>()
+        public static CircularList<Key> CircleOf5ths = new CircularList<Key>()
         {
-            {  "0", new Scale(Note.c) },
-            { "1s", new Scale(Note.g) },
-            { "2s", new Scale(Note.d) },
-            { "3s", new Scale(Note.a) },
-            { "4s", new Scale(Note.e) },
-            { "5s", new Scale(Note.b) },
-            { "6s", new Scale(Note.f, Accidental.s) },
-            { "1f", new Scale(Note.f) },
-            { "2f", new Scale(Note.b, Accidental.f) },
-            { "3f", new Scale(Note.e, Accidental.f) },
-            { "4f", new Scale(Note.a, Accidental.f) },
-            { "5f", new Scale(Note.d, Accidental.f) },
-            { "6f", new Scale(Note.g, Accidental.f) },
-        };
-
-        public static Dictionary<string, Scale> CircleOf5thsMinor = new Dictionary<string, Scale>()
-        {
-            {  "0", new Scale (Note.a, mode: Mode.Minor)},
-            { "1s", new Scale (Note.e, mode: Mode.Minor)},
-            { "2s", new Scale (Note.b, mode: Mode.Minor)},
-            { "3s", new Scale (Note.f, Accidental.s, Mode.Minor)},
-            { "4s", new Scale (Note.c, Accidental.s, Mode.Minor)},
-            { "5s", new Scale (Note.g, Accidental.s, Mode.Minor)},
-            { "6s", new Scale (Note.d, Accidental.s, Mode.Minor)},
-            { "1f", new Scale (Note.d, mode: Mode.Minor)},
-            { "2f", new Scale (Note.g, mode: Mode.Minor)},
-            { "3f", new Scale (Note.c, mode: Mode.Minor)},
-            { "4f", new Scale (Note.f, mode: Mode.Minor)},
-            { "5f", new Scale (Note.b, Accidental.f, Mode.Minor)},
-            { "6f", new Scale (Note.e, Accidental.f, Mode.Minor)},
+            new Key(Note.c),
+            new Key(Note.g),
+            new Key(Note.d),
+            new Key(Note.a),
+            new Key(Note.e),
+            new Key(Note.b),
+            new Key(Note.f, Accidental.s),
+            new Key(Note.g, Accidental.f),
+            new Key(Note.d, Accidental.f),
+            new Key(Note.a, Accidental.f),
+            new Key(Note.e, Accidental.f),
+            new Key(Note.b, Accidental.f),
+            new Key(Note.f),
         };
     }
 }
