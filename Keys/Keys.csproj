@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CircularList.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="OutputMei.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
