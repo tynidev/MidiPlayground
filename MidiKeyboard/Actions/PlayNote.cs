@@ -15,7 +15,7 @@ namespace MidiKeyboard
             this.keyToPlay = key;
         }
 
-        public void KeyPressEvent(Keyboard keyboard, Key key, ChannelCommand command)
+        public void KeyPressEvent(Keyboard keyboard, int absolutePitch, ChannelCommand command)
         {
             if(command != ChannelCommand.NoteOn) return;
 
@@ -24,7 +24,7 @@ namespace MidiKeyboard
                 if (ready)
                     return;
 
-                this.Played = this.keyToPlay.AbsolutePitch == key.AbsolutePitch;
+                this.Played = this.keyToPlay.AbsolutePitch == absolutePitch;
                 this.ready = true;
             }
         }

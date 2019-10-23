@@ -58,7 +58,7 @@ namespace Keys
         public readonly Mode Mode = Mode.Major;
 
         private int NoteOffset;
-        private int RootOffset;
+        public int RootOffset;
         private ScaleNote[] Notes;
 
         private static int[] Major = new int[] { 0, 2, 2, 1, 2, 2, 2, 1 };

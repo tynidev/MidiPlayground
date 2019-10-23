@@ -29,12 +29,12 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
         static void Main(string[] args)
         {
-            //List<ScaleNote> group = new List<ScaleNote>()
-            //{
-            //    new ScaleNote(){interval = 0, register = 4},
-            //    new ScaleNote(){interval = 3, register = 4},
-            //    new ScaleNote(){interval = 5, register = 5},
-            //};
+            List<ScaleNote> triad = new List<ScaleNote>()
+            {
+                new ScaleNote(){interval = 0},
+                new ScaleNote(){interval = 2},
+                new ScaleNote(){interval = 4},
+            };
 
             //var cMajor = new Scale(Note.c);
             //var gMinor = new Scale(Note.g, mode: Mode.Minor);
@@ -63,59 +63,36 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
             //Console.ReadKey();
 
-            foreach (var key in Scales.CircleOf5thsMinor)
+            var chords = new Dictionary<string, List<int>>();
+            foreach(var kvp in Scales.CircleOf5thsMajor)
             {
-                var notes = "";
-                for (int i = 0; i < 8; i++)
-                {
-                    var a = Accidental.n;
-                    var n = key.Value.GetNoteName(i, out a);
+                var scale = kvp.Value;
+                var a = Accidental.n;
+                var note = scale.GetNoteName(0, out a);
+                var name = a != Accidental.n ? note.ToString() + a.ToString() : note.ToString();
+                chords.Add(
+                    name,
+                    scale.SelectNotes(triad)
+                         .Select(n => (n.SemitonesFromRoot + scale.RootOffset) % 12)
+                         .ToList()
+                    );
 
-                    var mod = "";
-                    switch(a)
-                    {
-                        case Accidental.s:
-                            mod = "#";
-                            break;
-                        case Accidental.x:
-                            mod = "x";
-                            break;
-                        case Accidental.f:
-                            mod = "-";
-                            break;
-                        case Accidental.ff:
-                            mod = "--";
-                            break;
-                    }
-                    notes += n.ToString() + mod;
-                    notes += " ";
-                }
-                Console.WriteLine(notes);
-                Console.WriteLine();
             }
-            Console.ReadKey();
-
-            var cMajorTrebble = new List<int>()
+            foreach (var kvp in Scales.CircleOf5thsMinor)
             {
-                Key.ToPitch((int)Note.c, 4),
-                Key.ToPitch((int)Note.e, 4),
-                Key.ToPitch((int)Note.g, 4),
-            };
-            var cMajorClef = new List<int>()
-            {
-                Key.ToPitch((int)Note.c, 3),
-                Key.ToPitch((int)Note.e, 3),
-                Key.ToPitch((int)Note.g, 3),
-            };
+                var scale = kvp.Value;
+                var a = Accidental.n;
+                var note = scale.GetNoteName(0, out a);
+                var name = a != Accidental.n ? note.ToString() + a.ToString() : note.ToString();
+                name += " Minor";
+                chords.Add(
+                    name,
+                    scale.SelectNotes(triad)
+                         .Select(n => (n.SemitonesFromRoot + scale.RootOffset) % 12)
+                         .ToList()
+                    );
 
-            var xml = OutputMei.Song("", 4, 4, "0", "major", 
-                OutputMei.Measure(1, 
-                    OutputMei.Chord(cMajorTrebble, OutputMei.NoteValue.Quarter), 
-                    OutputMei.Chord(cMajorClef, OutputMei.NoteValue.Quarter)));
-
-            File.WriteAllText(@"C:\Users\tyni\Desktop\test.xml", xml);
-
-            var chords = new Dictionary<string, List<Key>>();
+            }
 
             if (InputDevice.DeviceCount < 1)
             {

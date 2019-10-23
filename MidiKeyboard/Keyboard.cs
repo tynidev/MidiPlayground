@@ -84,7 +84,7 @@ namespace MidiKeyboard
                 }
 
                 foreach (var foo in actions)
-                    foo.KeyPressEvent(this, this[key], command);
+                    foo.KeyPressEvent(this, key, command);
             };
             inDevice.StartRecording();
         }

@@ -8,7 +8,7 @@ namespace MidiKeyboard
 {
     public class PlayMelody : IKeyAction
     {
-        protected List<Key> melody = null;
+        protected List<int> melody = null;
         protected bool absolute = false;
         protected bool breakOnError = false;
         protected bool ready = false;
@@ -17,7 +17,7 @@ namespace MidiKeyboard
 
         public bool Played = false;
 
-        public PlayMelody(List<Key> melody, bool absolute=false, bool breakOnError=false)
+        public PlayMelody(List<int> melody, bool absolute=false, bool breakOnError=false)
         {
             this.melody = melody;
             this.absolute = absolute;
@@ -25,7 +25,7 @@ namespace MidiKeyboard
             this.breakOnError = breakOnError;
         }
 
-        public void KeyPressEvent(Keyboard keyboard, Key key, ChannelCommand command)
+        public void KeyPressEvent(Keyboard keyboard, int absolutePitch, ChannelCommand command)
         {
             if (command != ChannelCommand.NoteOn)
                 return;
@@ -39,9 +39,9 @@ namespace MidiKeyboard
                 {   // Don't accept key press if it happens nearly simultaneously 
                     return;
                 }
-
-                if ((absolute && (key.AbsolutePitch == melody.ElementAt(idx).AbsolutePitch)) ||
-                   (!absolute && (key.RelativePitch == melody.ElementAt(idx).RelativePitch)))
+                int relativePitch = absolutePitch % 12;
+                if ((absolute && (absolutePitch == melody.ElementAt(idx))) ||
+                   (!absolute && (relativePitch == melody.ElementAt(idx))))
                 {   // If we played the correct note in the sequence then move to next note
                     lastKeyPress = DateTime.Now;
                     idx++;
