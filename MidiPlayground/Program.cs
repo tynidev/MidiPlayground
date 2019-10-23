@@ -5,6 +5,7 @@ using System.Linq;
 using Keys;
 using System.Diagnostics;
 using System.IO;
+using MidiKeyboard;
 
 namespace MidiPlayground
 {
@@ -77,17 +78,17 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
             }
             Console.ReadKey();
 
-            var cMajorTrebble = new List<Keys.Key>()
+            var cMajorTrebble = new List<int>()
             {
-                new Keys.Key(Note.c, 4),
-                new Keys.Key(Note.e, 4),
-                new Keys.Key(Note.g, 4),
+                Key.ToPitch((int)Note.c, 4),
+                Key.ToPitch((int)Note.e, 4),
+                Key.ToPitch((int)Note.g, 4),
             };
-            var cMajorClef = new List<Keys.Key>()
+            var cMajorClef = new List<int>()
             {
-                new Keys.Key(Note.c, 3),
-                new Keys.Key(Note.e, 3),
-                new Keys.Key(Note.g, 3),
+                Key.ToPitch((int)Note.c, 3),
+                Key.ToPitch((int)Note.e, 3),
+                Key.ToPitch((int)Note.g, 3),
             };
 
             var xml = OutputMei.Song("", 4, 4, "0", "major", 
@@ -97,30 +98,7 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
             File.WriteAllText(@"C:\Users\tyni\Desktop\test.xml", xml);
 
-            var chords = new Dictionary<string, List<Keys.Key>>();
-            Generator.ForEveryChromaticNote((string noteName, int midiNoteValue) =>
-            {
-                chords.Add(noteName + "", Generator.GenerateChord(midiNoteValue, Constants.TriadMajorRootPos));
-                chords.Add(noteName + " Minor", Generator.GenerateChord(midiNoteValue, Constants.TriadMinorRootPos));
-
-                //chords.Add(noteName + " 1st Inversion", Generator.GenerateChord(midiNoteValue, Constants.TriadMajor1stInv));
-                //chords.Add(noteName + " Minor 1st Inversion", Generator.GenerateChord(midiNoteValue, Constants.TriadMinor1stInv));
-
-                //chords.Add(noteName + " 2nd Inversion", Chords.GenerateChord(i, Constants.TriadMajor2ndInv));
-                //chords.Add(noteName + " Minor 2nd Inversion", Chords.GenerateChord(i, Constants.TriadMinor2ndInv));
-
-                //chords.Add(noteName + "Seventh Root Position", Chords.GenerateChord(i, Constants.SeventhMajorRootPos));
-                //chords.Add(noteName + "Minor Seventh Root Position", Chords.GenerateChord(i, Constants.SeventhMinorRootPos));
-
-                //chords.Add(noteName + "Seventh 1st Inversion", Chords.GenerateChord(i, Constants.SeventhMajor1stInv));
-                //chords.Add(noteName + "Minor Seventh 1st Inversion", Chords.GenerateChord(i, Constants.SeventhMinor1stInv));
-
-                //chords.Add(noteName + "Seventh Root 2nd Inversion", Chords.GenerateChord(i, Constants.SeventhMajor2ndInv));
-                //chords.Add(noteName + "Minor Seventh 2nd Inversion", Chords.GenerateChord(i, Constants.SeventhMinor2ndInv));
-
-                //chords.Add(noteName + "Seventh 3rd Inversion", Chords.GenerateChord(i, Constants.SeventhMajor3rdInv));
-                //chords.Add(noteName + "Minor Seventh 3rd Inversion", Chords.GenerateChord(i, Constants.SeventhMinor3rdInv));
-            });
+            var chords = new Dictionary<string, List<Key>>();
 
             if (InputDevice.DeviceCount < 1)
             {

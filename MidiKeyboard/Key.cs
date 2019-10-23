@@ -10,14 +10,14 @@ namespace MidiKeyboard
             this.AbsolutePitch = pitch;
         }
 
-        public Key(Note name, int register)
+        public Key(int name, int register)
         {
             this.AbsolutePitch = ToPitch(name, register);
         }
 
-        public static int ToPitch(Note name, int register)
+        public static int ToPitch(int name, int register)
         {
-            return (int)name + (register * 12);
+            return name + (register * 12);
         }
 
         public static Note ToNote(int pitch)
