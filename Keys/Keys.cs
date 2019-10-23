@@ -119,7 +119,7 @@ namespace Keys
                 {
                     name = names[noteNameIdx],
                     SemitonesFromRoot = pitch,
-                    interval = i
+                    interval = i + 1 // offset so we can have human readable intervals
                 });
             }
         }
@@ -127,7 +127,7 @@ namespace Keys
         public KeyNote SelectNote(KeyNote noteToSelect)
         {
             int length = Notes.Count();
-            var note = Notes[(this.Position + noteToSelect.interval) % length];
+            var note = Notes[(this.Position + noteToSelect.interval - 1) % length];
 
             return new KeyNote()
             {
@@ -147,6 +147,8 @@ namespace Keys
 
         public char GetNoteName(int intervalFromRoot, out Accidental accidental)
         {
+            intervalFromRoot -= 1; // offset so we can use human readable intervals
+
             int[] CMajor = new int[] { 0, 2, 4, 5, 7, 9, 11, 12 };
 
             intervalFromRoot = (intervalFromRoot + this.Position) % 7;

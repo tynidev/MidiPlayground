@@ -98,47 +98,58 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
             //Console.ReadKey();
 
             var circle = new CircleOf5ths();
-            var k = circle[0];
-            k.Mode = Mode.Minor;
+            //var k = circle[0];
+            //k.Mode = Mode.Minor;
 
-            var aChord = k.SelectNotes(new List<KeyNote>()
-            {
-                new KeyNote(){ interval = 0 },
-                new KeyNote(){ interval = 2 },
-                new KeyNote(){ interval = 4 },
-            });
+            //var aChord = k.SelectNotes(new List<KeyNote>()
+            //{
+            //    new KeyNote(){ interval = 1 },
+            //    new KeyNote(){ interval = 3 },
+            //    new KeyNote(){ interval = 5 },
+            //});
 
-            Console.WriteLine(GetNoteNames(k, aChord.Select(o => o.interval).ToList()));
+            //Console.WriteLine(GetNoteNames(k, aChord.Select(o => o.interval).ToList()));
 
-            foreach (var key in circle)
-            {
-                key.Mode = Mode.Major;
-                Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
-                key.Mode = Mode.Minor;
-                Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
-                Console.WriteLine();
-            }
-            Console.ReadKey();
+            //foreach (var key in circle)
+            //{
+            //    key.Mode = Mode.Ionian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Dorian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Phrygian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Lydian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Mixolydian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Aeolian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Locrian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
 
-            var cMajorTrebble = new List<int>()
-            {
-                MidiKeyboard.Key.ToPitch((int)Note.c, 4),
-                MidiKeyboard.Key.ToPitch((int)Note.e, 4),
-                MidiKeyboard.Key.ToPitch((int)Note.g, 4),
-            };
-            var cMajorClef = new List<int>()
-            {
-                MidiKeyboard.Key.ToPitch((int)Note.c, 3),
-                MidiKeyboard.Key.ToPitch((int)Note.e, 3),
-                MidiKeyboard.Key.ToPitch((int)Note.g, 3),
-            };
+            //    Console.WriteLine();
+            //}
+            //Console.ReadKey();
 
-            var xml = OutputMei.Song("", 4, 4, "0", "major", 
-                OutputMei.Measure(1, 
-                    OutputMei.Chord(cMajorTrebble, OutputMei.NoteValue.Quarter), 
-                    OutputMei.Chord(cMajorClef, OutputMei.NoteValue.Quarter)));
+            //var cMajorTrebble = new List<int>()
+            //{
+            //    MidiKeyboard.Key.ToPitch((int)Note.c, 4),
+            //    MidiKeyboard.Key.ToPitch((int)Note.e, 4),
+            //    MidiKeyboard.Key.ToPitch((int)Note.g, 4),
+            //};
+            //var cMajorClef = new List<int>()
+            //{
+            //    MidiKeyboard.Key.ToPitch((int)Note.c, 3),
+            //    MidiKeyboard.Key.ToPitch((int)Note.e, 3),
+            //    MidiKeyboard.Key.ToPitch((int)Note.g, 3),
+            //};
 
-            File.WriteAllText(@"C:\Users\tyni\Desktop\test.xml", xml);
+            //var xml = OutputMei.Song("", 4, 4, "0", "major", 
+            //    OutputMei.Measure(1, 
+            //        OutputMei.Chord(cMajorTrebble, OutputMei.NoteValue.Quarter), 
+            //        OutputMei.Chord(cMajorClef, OutputMei.NoteValue.Quarter)));
+
+            //File.WriteAllText(@"C:\Users\tyni\Desktop\test.xml", xml);
 
             var chords = new Dictionary<string, List<MidiKeyboard.Key>>();
 
