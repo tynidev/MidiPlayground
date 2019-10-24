@@ -3,7 +3,7 @@ using Sanford.Multimedia;
 
 namespace MidiKeyboard
 {
-    public class MidiKey : Note
+    public class MidiKey
     {
         public MidiKey(int pitch)
         {
