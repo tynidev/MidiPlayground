@@ -18,7 +18,7 @@ namespace Keys
 
         }
 
-        public static string Chord(List<KeyNote> chord, NoteValue length, bool dotted = false, string color = "#000000")
+        public static string Chord(List<Note> chord, NoteValue length, bool dotted = false, string color = "#000000")
         {
             var notes = string.Join("\r\n", chord.Select(c =>
             {
@@ -86,7 +86,7 @@ $@"<chord dur='{(int)length}' color='{color}'>
 </mei>";
         }
 
-        public static string Note(KeyNote note, NoteValue length, bool dotted = false, string color = "#000000")
+        public static string Note(Note note, NoteValue length, bool dotted = false, string color = "#000000")
         { 
             var accid = string.Empty;
             if (note.Accidental != Accidental.n)

@@ -34,17 +34,16 @@ namespace FlashCards
             base.OnInitialized(e);
 
             var circle = new CircleOf5ths();
-            var c = circle[0];
 
-            var triad = new List<KeyNote>()
+            var triad = new List<Note>()
             {
-                new KeyNote(){Interval = 1, Register = 2},
-                new KeyNote(){Interval = 3, Register = 2},
-                new KeyNote(){Interval = 5, Register = 2},
+                new Note(){Interval = 1, Register = 2},
+                new Note(){Interval = 3, Register = 2},
+                new Note(){Interval = 5, Register = 2},
             };
 
-            var chord = circle[-1].Project(circle[3].Transpose(triad)).ToList();
             var note = circle[-1].Project(circle[-1][4]);
+            var chord = circle[-1].Project(circle[3].Transpose(triad)).ToList();
 
             //var eMajor = circle[4].Transpose(triad).ToList();
 

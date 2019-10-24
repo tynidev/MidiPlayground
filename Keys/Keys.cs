@@ -15,25 +15,36 @@ namespace Keys
         n =   0,
     }
 
-    public enum Note
+    public enum Semitone
     {
         c = 0,
-        cs = 1,
-        dFlat = 1,
+        csharp = 1,
+        dflat = 1,
         d = 2,
-        ds = 3,
-        eFlat = 3, 
+        dsharp = 3,
+        eflat = 3, 
         e = 4,
         f = 5,
-        fs = 6,
-        ff = 6,
+        fsharp = 6,
+        fflat = 6,
         g = 7,
-        gs = 8,
-        af = 8,
+        gsharp = 8,
+        aflat = 8,
         a = 9,
-        @as = 10,
-        bf = 10,
+        asharp = 10,
+        bflat = 10,
         b = 11
+    }
+
+    public enum NoteLetters
+    {
+        c = 0,
+        d = 2,
+        e = 4,
+        f = 5,
+        g = 7,
+        a = 9,
+        b = 11,
     }
 
     public enum Mode
@@ -50,16 +61,36 @@ namespace Keys
         Locrian = 6,
     }
 
-    public class KeyNote
+    public class Note
     {
-        public char Name;
-        public int SemitonesFromRoot;
-        public int RootSemitone;
+        /// <summary>
+        /// Note name
+        /// </summary>
+        public NoteLetters Name;
 
+        /// <summary>
+        /// Interval of scale
+        /// </summary>
         public int Interval = 0;
-        public int Register = 4;
 
-        private Accidental a = Accidental.n;
+        /// <summary>
+        /// Semitone of scale root
+        /// </summary>
+        public Semitone RootSemitone;
+
+        /// <summary>
+        /// Semitone from scale root
+        /// </summary>
+        public Semitone SemitonesFromRoot;
+
+        /// <summary>
+        /// Register this note is in
+        /// </summary>
+        public int Register = 4;
+        
+        /// <summary>
+        /// Accidental
+        /// </summary>
         public Accidental Accidental
         {
             get
@@ -68,24 +99,31 @@ namespace Keys
             }
             set
             {
-                this.SemitonesFromRoot += (int)value;
+                this.SemitonesFromRoot = (Semitone)((int)this.SemitonesFromRoot + (int)value);
                 this.a = value;
             }
         }
+        private Accidental a = Accidental.n;
 
-        public int AbsolutePitch
+        /// <summary>
+        /// Absolute MIDI note value
+        /// </summary>
+        public Semitone AbsolutePitch
         {
-            get => RootSemitone + SemitonesFromRoot + (12 * Register);
+            get => (Semitone)((int)RootSemitone + (int)SemitonesFromRoot + (12 * Register));
         }
 
-        public int RelativePitch
+        public Semitone RelativePitch
         {
-            get => (RootSemitone + SemitonesFromRoot) % 12;
+            get => (Semitone)(((int)RootSemitone + (int)SemitonesFromRoot) % 12);
         }
     }
 
-    public class Key : CircularList<KeyNote>
+    public class Key : CircularList<Note>
     {
+        public Semitone RootSemitone { get; private set; }
+
+        private int noteOffset = 0;
         private Mode mode = Mode.Major;
         public Mode Mode
         {
@@ -101,12 +139,7 @@ namespace Keys
             }
         }
 
-        public int NoteOffset;
-        public int RootOffset;
-
-        private static int[] Major = new int[] { 0, 2, 2, 1, 2, 2, 2, 1 };
-
-        public override KeyNote this[int index]
+        public override Note this[int index]
         {
             get
             {
@@ -118,56 +151,44 @@ namespace Keys
             }
         }
 
-        public List<KeyNote> Notes
-        {
-            get { return this.list;  }
-            private set { this.list = value; }
-        }
-
-        public Key(Note note, Accidental accidental = Accidental.n)
+        public Key(NoteLetters rootName, Accidental rootAccidental = Accidental.n)
         {
             this.mode = Mode.Major;
 
-            int offset = (int)note + (int)accidental;
-            var noteOffsets = new Dictionary<Note, int>()
-            {
-                { Note.c, 0 },
-                { Note.d, 1 },
-                { Note.e, 2 },
-                { Note.f, 3 },
-                { Note.g, 4 },
-                { Note.a, 5 },
-                { Note.b, 6 },
-            };
+            this.RootSemitone = (Semitone)(((int)rootName + (int)rootAccidental) % 12);
+            var major = new CircularList<Semitone> { Semitone.c, Semitone.d, Semitone.e, Semitone.f, Semitone.g, Semitone.a, Semitone.b };
 
-            this.init(offset, noteOffsets[note], Major);
-        }
-
-        private void init(int offset, int noteOffset, int[] key)
-        {
-            this.RootOffset = offset;
-            this.NoteOffset = noteOffset;
-            Notes = new List<KeyNote>(7);
-            var names = new char[7] { 'c', 'd', 'e', 'f', 'g', 'a', 'b' };
-            int pitch = 0;
-            for(int i = 0; i < 7; i++)
+            this.noteOffset = 0;
+            foreach(var name in major)
             {
-                pitch += key[i];
-                var noteNameIdx = (noteOffset + i) % 7;
-                Notes.Add(new KeyNote()
+                if (name == (Semitone)rootName)
                 {
-                    Name = names[noteNameIdx],
-                    SemitonesFromRoot = pitch,
-                    RootSemitone = offset,
-                    Interval = i + 1 // offset so we can have human readable intervals
+                    break;
+                }
+                this.noteOffset++;
+            }
+
+            for (int interval = 0; interval < 7; interval++)
+            {
+                this.Add(new Note()
+                {
+                    Name = (NoteLetters)major[this.noteOffset + interval],
+                    SemitonesFromRoot = major[interval],
+                    RootSemitone = this.RootSemitone,
+                    Interval = interval + 1 // offset so we can have human readable intervals
                 });
             }
         }
 
-        public KeyNote Project(KeyNote project)
+        /// <summary>
+        /// Returns the note as it would be written in the current key.
+        /// </summary>
+        /// <param name="project">Note to project</param>
+        /// <returns></returns>
+        public Note Project(Note project)
         {
-            var note = Notes[0];
-            foreach(var n in Notes)
+            var note = this[0];
+            foreach(var n in this)
             {
                 if(Math.Abs(n.RelativePitch - project.RelativePitch) <
                    Math.Abs(note.RelativePitch - project.RelativePitch))
@@ -176,7 +197,7 @@ namespace Keys
                 }
             }
 
-            var ret = new KeyNote()
+            var ret = new Note()
             {
                 Name = note.Name,
                 Interval = note.Interval,
@@ -184,50 +205,71 @@ namespace Keys
 
                 Register = project.Register,
                 RootSemitone = note.RootSemitone,
-                SemitonesFromRoot = 12 - Math.Abs(note.RootSemitone - project.RelativePitch),
+                SemitonesFromRoot = (Semitone)(12 - Math.Abs((int)note.RootSemitone - (int)project.RelativePitch)),
             };
             return ret;
         }
 
-        public KeyNote Transpose(KeyNote noteToSelect)
+        /// <summary>
+        /// Returns the notes as they would be written in the current key
+        /// </summary>
+        /// <param name="project">Notes to project</param>
+        /// <returns></returns>
+        public List<Note> Project(List<Note> project)
         {
-            int length = Notes.Count();
-            var note = Notes[(this.Position + noteToSelect.Interval - 1) % length];
+            return project.Select(n => Project(n)).ToList();
+        }
 
-            int addRegister = (this.NoteOffset + noteToSelect.Interval - 1) / length;
+        /// <summary>
+        /// Returns the equivalent interval in the current key.
+        /// </summary>
+        /// <param name="transpose">Note to transpose</param>
+        /// <returns></returns>
+        public Note Transpose(Note transpose)
+        {
+            int length = this.Count();
+            var note = this[transpose.Interval];
 
-            return new KeyNote()
+            int addRegister = (this.noteOffset + transpose.Interval - 1) / length;
+
+            return new Note()
             {
                 Name = note.Name,
                 SemitonesFromRoot = note.SemitonesFromRoot,
-                RootSemitone = this.RootOffset,
-                Register = noteToSelect.Register + addRegister,
-                Interval = noteToSelect.Interval,
-                Accidental = noteToSelect.Accidental,
+                RootSemitone = this.RootSemitone,
+                Register = transpose.Register + addRegister,
+                Interval = transpose.Interval,
+                Accidental = transpose.Accidental,
             };
         }
 
-        public List<KeyNote> Project(List<KeyNote> notesToSelect)
+        /// <summary>
+        /// Returns the equivalent intervals in the current key.
+        /// </summary>
+        /// <param name="transpose">Notes to transpose</param>
+        /// <returns></returns>
+        public List<Note> Transpose(List<Note> transpose)
         {
-            return notesToSelect.Select(n => Project(n)).ToList();
+            return transpose.Select(n => Transpose(n)).ToList();
         }
 
-        public List<KeyNote> Transpose(List<KeyNote> notesToSelect)
-        {
-            return notesToSelect.Select(n => Transpose(n)).ToList();
-        }
-
-        public char GetNoteName(int interval, out Accidental accidental)
+        /// <summary>
+        /// Returns the specified interval as it would be notated in sheet music.
+        /// </summary>
+        /// <param name="interval">Interval of note name to retrieve</param>
+        /// <param name="accidental">Accidental of note returned</param>
+        /// <returns></returns>
+        public NoteLetters GetSheetNoteName(int interval, out Accidental accidental)
         {
             interval -= 1; // offset so we can use human readable intervals
 
             int[] CMajor = new int[] { 0, 2, 4, 5, 7, 9, 11, 12 };
 
             interval = (interval + this.Position) % 7;
-            int semitonesFromRoot = Notes[interval].SemitonesFromRoot;
+            int semitonesFromRoot = (int)this.list[interval].SemitonesFromRoot;
 
-            int intervalInC = (interval + NoteOffset) % 7;
-            int semitonesFromC = (semitonesFromRoot + RootOffset) % 12;
+            int intervalInC = (interval + noteOffset) % 7;
+            int semitonesFromC = (semitonesFromRoot + (int)RootSemitone) % 12;
 
             // Handle the two wrap around cases where we need to compare against top C
             if (intervalInC == 0 && semitonesFromC == 11)
@@ -236,7 +278,7 @@ namespace Keys
                 semitonesFromC = 12;
 
             accidental = (Accidental)(semitonesFromC - CMajor[intervalInC]);
-            return Notes[interval].Name;
+            return this.list[interval].Name;
         }
     }
 
@@ -246,21 +288,21 @@ namespace Keys
         {
             this.list = (new CircularList<Key>()
             {
-                new Key(Note.c),
+                new Key(NoteLetters.c),
                 
-                new Key(Note.g),
-                new Key(Note.d),
-                new Key(Note.a),
-                new Key(Note.e),
-                new Key(Note.b),
+                new Key(NoteLetters.g),
+                new Key(NoteLetters.d),
+                new Key(NoteLetters.a),
+                new Key(NoteLetters.e),
+                new Key(NoteLetters.b),
                 
-                new Key(Note.f, Accidental.s), new Key(Note.g, Accidental.f),
+                new Key(NoteLetters.f, Accidental.s), new Key(NoteLetters.g, Accidental.f),
 
-                new Key(Note.d, Accidental.f),
-                new Key(Note.a, Accidental.f),
-                new Key(Note.e, Accidental.f),
-                new Key(Note.b, Accidental.f),
-                new Key(Note.f),
+                new Key(NoteLetters.d, Accidental.f),
+                new Key(NoteLetters.a, Accidental.f),
+                new Key(NoteLetters.e, Accidental.f),
+                new Key(NoteLetters.b, Accidental.f),
+                new Key(NoteLetters.f),
             }).list;
         }
     }

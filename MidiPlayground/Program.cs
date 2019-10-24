@@ -30,7 +30,7 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
         private static string GetNoteName(Keys.Key key, int i)
         {
             var a = Accidental.n;
-            var n = key.GetNoteName(i, out a);
+            var n = key.GetSheetNoteName(i, out a);
 
             var mod = "";
             switch (a)
@@ -63,6 +63,7 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
         static void Main(string[] args)
         {
+            var circle = new CircleOf5ths();
             //var cMajor = new Scale(Note.c);
             //var gMinor = new Scale(Note.g, mode: Mode.Minor);
 
@@ -104,19 +105,19 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
             //foreach (var key in circle)
             //{
             //    key.Mode = Mode.Ionian;
-            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    Console.WriteLine(GetNoteNames(key, key.Select(o => o.Interval).ToList()));
             //    key.Mode = Mode.Dorian;
-            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    Console.WriteLine(GetNoteNames(key, key.Select(o => o.Interval).ToList()));
             //    key.Mode = Mode.Phrygian;
-            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    Console.WriteLine(GetNoteNames(key, key.Select(o => o.Interval).ToList()));
             //    key.Mode = Mode.Lydian;
-            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    Console.WriteLine(GetNoteNames(key, key.Select(o => o.Interval).ToList()));
             //    key.Mode = Mode.Mixolydian;
-            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    Console.WriteLine(GetNoteNames(key, key.Select(o => o.Interval).ToList()));
             //    key.Mode = Mode.Aeolian;
-            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    Console.WriteLine(GetNoteNames(key, key.Select(o => o.Interval).ToList()));
             //    key.Mode = Mode.Locrian;
-            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    Console.WriteLine(GetNoteNames(key, key.Select(o => o.Interval).ToList()));
 
             //    Console.WriteLine();
             //}
@@ -143,12 +144,11 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
             //File.WriteAllText(@"C:\Users\tyni\Desktop\test.xml", xml);
 
 
-            var circle = new CircleOf5ths();
-            List<KeyNote> triad = new List<KeyNote>()
+            List<Note> triad = new List<Note>()
             {
-                new KeyNote(){Interval = 1},
-                new KeyNote(){Interval = 3},
-                new KeyNote(){Interval = 5},
+                new Note(){Interval = 1},
+                new Note(){Interval = 3},
+                new Note(){Interval = 5},
             };
             var chords = new Dictionary<string, List<int>>();
             foreach (var scale in circle)
@@ -157,14 +157,14 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
                 chords.Add(
                     GetNoteName(scale, 1).ToUpper(),
                     scale.Transpose(triad)
-                         .Select(n => (n.SemitonesFromRoot + scale.RootOffset) % 12)
+                         .Select(n => (int)n.RelativePitch)
                          .ToList()
                     );
                 scale.Mode = Mode.Minor;
                 chords.Add(
                     GetNoteName(scale, 1).ToUpper() + $"m",
                     scale.Transpose(triad)
-                         .Select(n => (n.SemitonesFromRoot + scale.RootOffset) % 12)
+                         .Select(n => (int)n.RelativePitch)
                          .ToList()
                     );
             }
