@@ -82,25 +82,17 @@ namespace Keys
                 }
             }
 
-            // Root = 7, RelativePitch = 0
-
-            int diff = (int)note.RootSemitone - (int)project.RelativePitch;
-            int add = (diff + (int)note.RootSemitone) / 12;
-
+            int newTone = (int)(project.RootSemitone - note.RootSemitone + project.SemitonesFromRoot);
             var ret = new Note()
             {
                 Name = note.Name,
                 Interval = note.Interval,
                 Accidental = (Accidental)(project.RelativePitch - note.RelativePitch),
 
-                Register = project.Register,
+                Register = project.Register + (newTone / 12),
                 RootSemitone = note.RootSemitone,
-                SemitonesFromRoot = (Semitone)(12 - Math.Abs(diff)),
+                SemitonesFromRoot = (Semitone)(newTone % 12),
             };
-            if (project.AbsolutePitch < ret.AbsolutePitch)
-                ret.Register--;
-            else if(project.AbsolutePitch > ret.AbsolutePitch)
-                ret.Register++;
 
             return ret;
         }
