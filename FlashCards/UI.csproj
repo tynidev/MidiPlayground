@@ -108,5 +108,10 @@
       <Name>Keys</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="verovio.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

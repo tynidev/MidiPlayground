@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -52,7 +53,7 @@ namespace FlashCards
         {
             DisplayHtml($@"<html>
     <head>
-        <script src='https://www.verovio.org/javascript/app/verovio-app.js'></script>
+        <script>{File.ReadAllText("verovio.js")}</script>
         <script>
         function myFunction()
         " + "{" + $@"
