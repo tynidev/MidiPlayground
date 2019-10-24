@@ -1,124 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Keys
 {
-    public enum Accidental
-    {
-        s =   1,
-        x =   2,
-        ts =  3,
-        f =  -1,
-        ff = -2,
-        tf = -3,
-        n =   0,
-    }
-
-    public enum Semitone
-    {
-        c = 0,
-        csharp = 1,
-        dflat = 1,
-        d = 2,
-        dsharp = 3,
-        eflat = 3, 
-        e = 4,
-        f = 5,
-        fsharp = 6,
-        fflat = 6,
-        g = 7,
-        gsharp = 8,
-        aflat = 8,
-        a = 9,
-        asharp = 10,
-        bflat = 10,
-        b = 11
-    }
-
-    public enum NoteLetters
-    {
-        c = 0,
-        d = 2,
-        e = 4,
-        f = 5,
-        g = 7,
-        a = 9,
-        b = 11,
-    }
-
-    public enum Mode
-    {
-        Major = 0,
-        Minor = 5,
-
-        Ionian = 0,
-        Dorian = 1,
-        Phrygian = 2,
-        Lydian = 3,
-        Mixolydian = 4,
-        Aeolian = 5,
-        Locrian = 6,
-    }
-
-    public class Note
-    {
-        /// <summary>
-        /// Note name
-        /// </summary>
-        public NoteLetters Name;
-
-        /// <summary>
-        /// Interval of scale
-        /// </summary>
-        public int Interval = 0;
-
-        /// <summary>
-        /// Semitone of scale root
-        /// </summary>
-        public Semitone RootSemitone;
-
-        /// <summary>
-        /// Semitone from scale root
-        /// </summary>
-        public Semitone SemitonesFromRoot;
-
-        /// <summary>
-        /// Register this note is in
-        /// </summary>
-        public int Register = 4;
-        
-        /// <summary>
-        /// Accidental
-        /// </summary>
-        public Accidental Accidental
-        {
-            get
-            {
-                return a;
-            }
-            set
-            {
-                this.SemitonesFromRoot = (Semitone)((int)this.SemitonesFromRoot + (int)value);
-                this.a = value;
-            }
-        }
-        private Accidental a = Accidental.n;
-
-        /// <summary>
-        /// Absolute MIDI note value
-        /// </summary>
-        public Semitone AbsolutePitch
-        {
-            get => (Semitone)((int)RootSemitone + (int)SemitonesFromRoot + (12 * Register));
-        }
-
-        public Semitone RelativePitch
-        {
-            get => (Semitone)(((int)RootSemitone + (int)SemitonesFromRoot) % 12);
-        }
-    }
-
     public class Key : CircularList<Note>
     {
         public Semitone RootSemitone { get; private set; }
@@ -159,7 +46,7 @@ namespace Keys
             var major = new CircularList<Semitone> { Semitone.c, Semitone.d, Semitone.e, Semitone.f, Semitone.g, Semitone.a, Semitone.b };
 
             this.noteOffset = 0;
-            foreach(var name in major)
+            foreach (var name in major)
             {
                 if (name == (Semitone)rootName)
                 {
@@ -188,9 +75,9 @@ namespace Keys
         public Note Project(Note project)
         {
             var note = this[0];
-            foreach(var n in this)
+            foreach (var n in this)
             {
-                if(Math.Abs(n.RelativePitch - project.RelativePitch) <
+                if (Math.Abs(n.RelativePitch - project.RelativePitch) <
                    Math.Abs(note.RelativePitch - project.RelativePitch))
                 {
                     note = n;
@@ -279,31 +166,6 @@ namespace Keys
 
             accidental = (Accidental)(semitonesFromC - CMajor[intervalInC]);
             return this.list[interval].Name;
-        }
-    }
-
-    public class CircleOf5ths : CircularList<Key>
-    {
-        public CircleOf5ths()
-        {
-            this.list = (new CircularList<Key>()
-            {
-                new Key(NoteLetters.c),
-                
-                new Key(NoteLetters.g),
-                new Key(NoteLetters.d),
-                new Key(NoteLetters.a),
-                new Key(NoteLetters.e),
-                new Key(NoteLetters.b),
-                
-                new Key(NoteLetters.f, Accidental.s), new Key(NoteLetters.g, Accidental.f),
-
-                new Key(NoteLetters.d, Accidental.f),
-                new Key(NoteLetters.a, Accidental.f),
-                new Key(NoteLetters.e, Accidental.f),
-                new Key(NoteLetters.b, Accidental.f),
-                new Key(NoteLetters.f),
-            }).list;
         }
     }
 }
