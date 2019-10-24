@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Keys;
 using System.Diagnostics;
-using System.IO;
 using MidiKeyboard;
 
 namespace MidiPlayground
