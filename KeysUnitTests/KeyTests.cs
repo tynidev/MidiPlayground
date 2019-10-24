@@ -38,9 +38,11 @@ namespace KeysUnitTests
                     if (i != 6)
                     {
                         // Assert Tranpose while we are at it
-                        var noteToTranpose = circle[i][1];
-                        var transposedNote = circle[i + 1].Transpose(noteToTranpose);
+                        var noteToChange = circle[i][1];
+                        var transposedNote = circle[i + 1].Transpose(noteToChange);
+                        var projectNote = circle[i + 1].Project(noteToChange);
 
+                        Assert.AreEqual(noteToChange.AbsolutePitch, projectNote.AbsolutePitch);
                         Assert.AreEqual(circle[i + 1][1].SemitonesFromRoot, transposedNote.SemitonesFromRoot);
                         Assert.AreEqual(circle[i + 1][1].RootSemitone, transposedNote.RootSemitone);
                         Assert.AreEqual(circle[i + 1][1].Interval, transposedNote.Interval);
@@ -50,6 +52,19 @@ namespace KeysUnitTests
 
                 Assert.AreEqual(expected[i], count);
             }
+        }
+
+        [TestMethod]
+        public void TestProject()
+        {
+            var circle = new CircleOf5ths();
+            Assert.AreEqual(13, circle.Count);
+
+            var c = circle[0][1];
+            var gScale = circle[1];
+
+            var note = gScale.Project(c);
+            Assert.AreEqual(c.AbsolutePitch, note.AbsolutePitch);
         }
 
         [TestMethod]

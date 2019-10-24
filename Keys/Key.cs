@@ -82,6 +82,11 @@ namespace Keys
                 }
             }
 
+            // Root = 7, RelativePitch = 0
+
+            int diff = (int)note.RootSemitone - (int)project.RelativePitch;
+            int add = (diff + (int)note.RootSemitone) / 12;
+
             var ret = new Note()
             {
                 Name = note.Name,
@@ -90,8 +95,13 @@ namespace Keys
 
                 Register = project.Register,
                 RootSemitone = note.RootSemitone,
-                SemitonesFromRoot = (Semitone)(12 - Math.Abs((int)note.RootSemitone - (int)project.RelativePitch)),
+                SemitonesFromRoot = (Semitone)(12 - Math.Abs(diff)),
             };
+            if (project.AbsolutePitch < ret.AbsolutePitch)
+                ret.Register--;
+            else if(project.AbsolutePitch > ret.AbsolutePitch)
+                ret.Register++;
+
             return ret;
         }
 
