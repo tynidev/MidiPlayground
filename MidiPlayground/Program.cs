@@ -27,6 +27,40 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
         private static List<IKeyAction> KeyActions = new List<IKeyAction>();
 
+        private static string GetNoteName(Keys.Key key, int i)
+        {
+            var a = Accidental.n;
+            var n = key.GetNoteName(i, out a);
+
+            var mod = "";
+            switch (a)
+            {
+                case Accidental.s:
+                    mod = "#";
+                    break;
+                case Accidental.x:
+                    mod = "x";
+                    break;
+                case Accidental.f:
+                    mod = "-";
+                    break;
+                case Accidental.ff:
+                    mod = "--";
+                    break;
+            }
+            return n.ToString() + mod;
+        }
+
+        private static string GetNoteNames(Keys.Key key, List<int> notes)
+        {
+            string name = "";
+            for(int i = 0; i < notes.Count(); i++)
+            {
+                name += GetNoteName(key, notes[i]) + " ";
+            }
+            return name;
+        }
+
         static void Main(string[] args)
         {
             List<ScaleNote> triad = new List<ScaleNote>()
@@ -63,36 +97,61 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
             //Console.ReadKey();
 
-            var chords = new Dictionary<string, List<int>>();
-            foreach(var kvp in Scales.CircleOf5thsMajor)
-            {
-                var scale = kvp.Value;
-                var a = Accidental.n;
-                var note = scale.GetNoteName(0, out a);
-                var name = a != Accidental.n ? note.ToString() + a.ToString() : note.ToString();
-                chords.Add(
-                    name,
-                    scale.SelectNotes(triad)
-                         .Select(n => (n.SemitonesFromRoot + scale.RootOffset) % 12)
-                         .ToList()
-                    );
+            var circle = new CircleOf5ths();
+            //var k = circle[0];
+            //k.Mode = Mode.Minor;
 
-            }
-            foreach (var kvp in Scales.CircleOf5thsMinor)
-            {
-                var scale = kvp.Value;
-                var a = Accidental.n;
-                var note = scale.GetNoteName(0, out a);
-                var name = a != Accidental.n ? note.ToString() + a.ToString() : note.ToString();
-                name += " Minor";
-                chords.Add(
-                    name,
-                    scale.SelectNotes(triad)
-                         .Select(n => (n.SemitonesFromRoot + scale.RootOffset) % 12)
-                         .ToList()
-                    );
+            //var aChord = k.SelectNotes(new List<KeyNote>()
+            //{
+            //    new KeyNote(){ interval = 1 },
+            //    new KeyNote(){ interval = 3 },
+            //    new KeyNote(){ interval = 5 },
+            //});
 
-            }
+            //Console.WriteLine(GetNoteNames(k, aChord.Select(o => o.interval).ToList()));
+
+            //foreach (var key in circle)
+            //{
+            //    key.Mode = Mode.Ionian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Dorian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Phrygian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Lydian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Mixolydian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Aeolian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+            //    key.Mode = Mode.Locrian;
+            //    Console.WriteLine(GetNoteNames(key, key.Notes.Select(o => o.interval).ToList()));
+
+            //    Console.WriteLine();
+            //}
+            //Console.ReadKey();
+
+            //var cMajorTrebble = new List<int>()
+            //{
+            //    MidiKeyboard.Key.ToPitch((int)Note.c, 4),
+            //    MidiKeyboard.Key.ToPitch((int)Note.e, 4),
+            //    MidiKeyboard.Key.ToPitch((int)Note.g, 4),
+            //};
+            //var cMajorClef = new List<int>()
+            //{
+            //    MidiKeyboard.Key.ToPitch((int)Note.c, 3),
+            //    MidiKeyboard.Key.ToPitch((int)Note.e, 3),
+            //    MidiKeyboard.Key.ToPitch((int)Note.g, 3),
+            //};
+
+            //var xml = OutputMei.Song("", 4, 4, "0", "major", 
+            //    OutputMei.Measure(1, 
+            //        OutputMei.Chord(cMajorTrebble, OutputMei.NoteValue.Quarter), 
+            //        OutputMei.Chord(cMajorClef, OutputMei.NoteValue.Quarter)));
+
+            //File.WriteAllText(@"C:\Users\tyni\Desktop\test.xml", xml);
+
+            var chords = new Dictionary<string, List<MidiKeyboard.Key>>();
 
             if (InputDevice.DeviceCount < 1)
             {
