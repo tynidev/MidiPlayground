@@ -5,7 +5,7 @@ namespace MidiKeyboard
 {
     public interface IKeyAction
     {
-        void KeyPressEvent(Keyboard keyboard, int key, ChannelCommand command);
+        void KeyPressEvent(MidiKeyboard keyboard, int key, ChannelCommand command);
 
         void WaitForKeyInput(List<IKeyAction> KeyActions);
     }

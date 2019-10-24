@@ -21,7 +21,7 @@ namespace MidiKeyboard
             this.absolute = absolute;
         }
 
-        public void KeyPressEvent(Keyboard keyboard, int key, ChannelCommand command)
+        public void KeyPressEvent(MidiKeyboard keyboard, int key, ChannelCommand command)
         {
             if (command != ChannelCommand.NoteOn)
                 return;

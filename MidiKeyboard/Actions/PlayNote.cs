@@ -6,16 +6,16 @@ namespace MidiKeyboard
 {
     public class PlayNote : IKeyAction
     {
-        private Key keyToPlay = null;
+        private MidiKey keyToPlay = null;
         private bool ready = false;
         public bool Played;
 
-        public PlayNote(Key key)
+        public PlayNote(MidiKey key)
         {
             this.keyToPlay = key;
         }
 
-        public void KeyPressEvent(Keyboard keyboard, int absolutePitch, ChannelCommand command)
+        public void KeyPressEvent(MidiKeyboard keyboard, int absolutePitch, ChannelCommand command)
         {
             if(command != ChannelCommand.NoteOn) return;
 

@@ -25,7 +25,7 @@ namespace MidiKeyboard
             this.breakOnError = breakOnError;
         }
 
-        public void KeyPressEvent(Keyboard keyboard, int absolutePitch, ChannelCommand command)
+        public void KeyPressEvent(MidiKeyboard keyboard, int absolutePitch, ChannelCommand command)
         {
             if (command != ChannelCommand.NoteOn)
                 return;

@@ -6,26 +6,26 @@ using Sanford.Multimedia.Midi;
 
 namespace MidiKeyboard
 {
-    public class Keyboard
+    public class MidiKeyboard
     {
         public readonly int BottomKey = 0;
         public readonly int TopKey = 0;
-        public readonly Dictionary<int, Key> Keys = new Dictionary<int, Key>();
+        public readonly Dictionary<int, MidiKey> Keys = new Dictionary<int, MidiKey>();
 
-        public Keyboard() : this(128) { }
-        public Keyboard(int size) : this(0, size - 1) { }
-        public Keyboard(int bottomKey, int topKey)
+        public MidiKeyboard() : this(128) { }
+        public MidiKeyboard(int size) : this(0, size - 1) { }
+        public MidiKeyboard(int bottomKey, int topKey)
         {
             this.BottomKey = bottomKey;
             this.TopKey = topKey;
 
             for (int i = this.BottomKey; i <= this.TopKey; i++)
             {
-                Keys.Add(i, new Key(i));
+                Keys.Add(i, new MidiKey(i));
             }
         }
 
-        public Keyboard(InputDevice inDevice)
+        public MidiKeyboard(InputDevice inDevice)
         {
             inDevice.StartRecording();
             bool read = false;
@@ -59,7 +59,7 @@ namespace MidiKeyboard
 
             for (int i = this.BottomKey; i <= this.TopKey; i++)
             {
-                Keys.Add(i, new Key(i));
+                Keys.Add(i, new MidiKey(i));
             }
 
             inDevice.StopRecording();
@@ -89,9 +89,9 @@ namespace MidiKeyboard
             inDevice.StartRecording();
         }
 
-        public IEnumerable<Key> OnKeys => Keys.Where(k => k.Value.On == true).Select(k => k.Value);
+        public IEnumerable<MidiKey> OnKeys => Keys.Where(k => k.Value.On == true).Select(k => k.Value);
 
-        public Key this[int index]
+        public MidiKey this[int index]
         {
             get
             {

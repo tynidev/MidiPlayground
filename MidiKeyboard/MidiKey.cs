@@ -3,14 +3,14 @@ using Sanford.Multimedia;
 
 namespace MidiKeyboard
 {
-    public class Key
+    public class MidiKey : Note
     {
-        public Key(int pitch)
+        public MidiKey(int pitch)
         {
             this.AbsolutePitch = pitch;
         }
 
-        public Key(int name, int register)
+        public MidiKey(int name, int register)
         {
             this.AbsolutePitch = ToPitch(name, register);
         }

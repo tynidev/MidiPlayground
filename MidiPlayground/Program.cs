@@ -23,7 +23,7 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
     class Program
     {
-        private static Keyboard keyboard = new Keyboard();
+        private static MidiKeyboard.MidiKeyboard keyboard = new MidiKeyboard.MidiKeyboard();
 
         private static List<IKeyAction> KeyActions = new List<IKeyAction>();
 
@@ -179,7 +179,7 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
             Console.WriteLine("Using Device: " + InputDevice.GetDeviceCapabilities(deviceId).name);
             using (InputDevice inDevice = new InputDevice(deviceId))
             {
-                keyboard = new Keyboard(inDevice);
+                keyboard = new MidiKeyboard.MidiKeyboard(inDevice);
                 keyboard.StartRecording(inDevice, KeyActions);
 
                 List<Card> cards = new List<Card>();
