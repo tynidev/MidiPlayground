@@ -14,24 +14,17 @@
     public enum Semitone
     {
         c = 0,
-        csharp = 1,
         dflat = 1,
         d = 2,
-        dsharp = 3,
         eflat = 3,
         e = 4,
-        fflat = 4,
         f = 5,
-        fsharp = 6,
         gflat = 6, 
         g = 7,
-        gsharp = 8,
         aflat = 8,
         a = 9,
-        asharp = 10,
         bflat = 10,
         b = 11,
-        bsharp = 0,
     }
 
     public enum NoteLetters
