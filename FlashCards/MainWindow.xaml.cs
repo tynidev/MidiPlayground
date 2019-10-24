@@ -33,25 +33,25 @@ namespace FlashCards
         {
             base.OnInitialized(e);
 
-            //var cMajorTrebble = new List<Keys.Key>()
-            //{
-            //    new Keys.Key(Note.c, 4),
-            //    new Keys.Key(Note.e, 4),
-            //    new Keys.Key(Note.g, 4),
-            //};
-            //var cMajorClef = new List<Keys.Key>()
-            //{
-            //    new Keys.Key(Note.c, 3),
-            //    new Keys.Key(Note.e, 3),
-            //    new Keys.Key(Note.g, 3),
-            //};
+            var circle = new CircleOf5ths();
+            var c = circle[0];
 
-            //var xml = OutputMei.Song("", 4, 4, "0", "major",
-            //    OutputMei.Measure(1,
-            //        OutputMei.Chord(cMajorTrebble, OutputMei.NoteValue.Quarter),
-            //        OutputMei.Chord(cMajorClef, OutputMei.NoteValue.Quarter)));
+            var triad = new List<KeyNote>()
+            {
+                new KeyNote(){Interval = 1, Register = 2},
+                new KeyNote(){Interval = 3, Register = 2},
+                new KeyNote(){Interval = 5, Register = 2},
+            };
 
-            var xml = "";
+            var chord = circle[-1].Project(circle[3].Transpose(triad)).ToList();
+            var note = circle[-1].Project(circle[-1][4]);
+
+            //var eMajor = circle[4].Transpose(triad).ToList();
+
+            var xml = OutputMei.Song("", 4, 4, "1f", "major",
+                OutputMei.Measure(1,
+                    OutputMei.Note(note, OutputMei.NoteValue.Quarter),
+                    OutputMei.Chord(chord, OutputMei.NoteValue.Quarter)));
 
             DisplayMei(xml);
         }

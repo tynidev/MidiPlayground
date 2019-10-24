@@ -18,9 +18,17 @@ namespace Keys
 
         }
 
-        public static string Chord(List<int> chord, NoteValue length, bool dotted = false, string color = "#000000")
+        public static string Chord(List<KeyNote> chord, NoteValue length, bool dotted = false, string color = "#000000")
         {
-            var notes = string.Join("\r\n", chord.Select(c => $"<note pnum='{c}' />"));
+            var notes = string.Join("\r\n", chord.Select(c =>
+            {
+                var accid = string.Empty;
+                if(c.Accidental != Accidental.n)
+                {
+                    accid = $"accid='{c.Accidental}'";
+                }
+                return $"<note pname='{c.Name}' oct='{c.Register}' {accid}/>";
+            }));
             return
 $@"<chord dur='{(int)length}' color='{color}'>
 {notes}
@@ -77,6 +85,17 @@ $@"<chord dur='{(int)length}' color='{color}'>
 </music>
 </mei>";
         }
+
+        public static string Note(KeyNote note, NoteValue length, bool dotted = false, string color = "#000000")
+        { 
+            var accid = string.Empty;
+            if (note.Accidental != Accidental.n)
+            {
+                accid = $"accid='{note.Accidental}'";
+            }
+            return $@"<note dur='{(int)length}' color='{color}' pname='{note.Name}' oct='{note.Register}' {accid} />";
+        }
+
         public static string Title(string title)
         {
             return $@"<titleStmt>

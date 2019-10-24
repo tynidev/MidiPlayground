@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Keys
@@ -7,8 +8,10 @@ namespace Keys
     {
         s =   1,
         x =   2,
+        ts =  3,
         f =  -1,
         ff = -2,
+        tf = -3,
         n =   0,
     }
 
@@ -49,12 +52,36 @@ namespace Keys
 
     public class KeyNote
     {
-        public char name;
+        public char Name;
         public int SemitonesFromRoot;
+        public int RootSemitone;
 
-        public int interval = 0;
-        public int register = 4;
-        public Accidental accidental = Accidental.n;
+        public int Interval = 0;
+        public int Register = 4;
+
+        private Accidental a = Accidental.n;
+        public Accidental Accidental
+        {
+            get
+            {
+                return a;
+            }
+            set
+            {
+                this.SemitonesFromRoot += (int)value;
+                this.a = value;
+            }
+        }
+
+        public int AbsolutePitch
+        {
+            get => RootSemitone + SemitonesFromRoot + (12 * Register);
+        }
+
+        public int RelativePitch
+        {
+            get => (RootSemitone + SemitonesFromRoot) % 12;
+        }
     }
 
     public class Key : CircularList<KeyNote>
@@ -74,10 +101,22 @@ namespace Keys
             }
         }
 
-        private int NoteOffset;
-        private int RootOffset;
+        public int NoteOffset;
+        public int RootOffset;
 
         private static int[] Major = new int[] { 0, 2, 2, 1, 2, 2, 2, 1 };
+
+        public override KeyNote this[int index]
+        {
+            get
+            {
+                return base[index - 1];
+            }
+            set
+            {
+                base[index - 1] = value;
+            }
+        }
 
         public List<KeyNote> Notes
         {
@@ -117,44 +156,77 @@ namespace Keys
                 var noteNameIdx = (noteOffset + i) % 7;
                 Notes.Add(new KeyNote()
                 {
-                    name = names[noteNameIdx],
+                    Name = names[noteNameIdx],
                     SemitonesFromRoot = pitch,
-                    interval = i + 1 // offset so we can have human readable intervals
+                    RootSemitone = offset,
+                    Interval = i + 1 // offset so we can have human readable intervals
                 });
             }
         }
 
-        public KeyNote SelectNote(KeyNote noteToSelect)
+        public KeyNote Project(KeyNote project)
+        {
+            var note = Notes[0];
+            foreach(var n in Notes)
+            {
+                if(Math.Abs(n.RelativePitch - project.RelativePitch) <
+                   Math.Abs(note.RelativePitch - project.RelativePitch))
+                {
+                    note = n;
+                }
+            }
+
+            var ret = new KeyNote()
+            {
+                Name = note.Name,
+                Interval = note.Interval,
+                Accidental = (Accidental)(project.RelativePitch - note.RelativePitch),
+
+                Register = project.Register,
+                RootSemitone = note.RootSemitone,
+                SemitonesFromRoot = 12 - Math.Abs(note.RootSemitone - project.RelativePitch),
+            };
+            return ret;
+        }
+
+        public KeyNote Transpose(KeyNote noteToSelect)
         {
             int length = Notes.Count();
-            var note = Notes[(this.Position + noteToSelect.interval - 1) % length];
+            var note = Notes[(this.Position + noteToSelect.Interval - 1) % length];
+
+            int addRegister = (this.NoteOffset + noteToSelect.Interval - 1) / length;
 
             return new KeyNote()
             {
-                name = note.name,
-                SemitonesFromRoot = note.SemitonesFromRoot + (int)noteToSelect.accidental,
-
-                register = noteToSelect.register + noteToSelect.interval / length,
-                interval = noteToSelect.interval,
-                accidental = noteToSelect.accidental
+                Name = note.Name,
+                SemitonesFromRoot = note.SemitonesFromRoot,
+                RootSemitone = this.RootOffset,
+                Register = noteToSelect.Register + addRegister,
+                Interval = noteToSelect.Interval,
+                Accidental = noteToSelect.Accidental,
             };
         }
 
-        public List<KeyNote> SelectNotes(List<KeyNote> notesToSelect)
+        public List<KeyNote> Project(List<KeyNote> notesToSelect)
         {
-            return notesToSelect.Select(n => SelectNote(n)).ToList();
+            return notesToSelect.Select(n => Project(n)).ToList();
         }
 
-        public char GetNoteName(int intervalFromRoot, out Accidental accidental)
+        public List<KeyNote> Transpose(List<KeyNote> notesToSelect)
         {
-            intervalFromRoot -= 1; // offset so we can use human readable intervals
+            return notesToSelect.Select(n => Transpose(n)).ToList();
+        }
+
+        public char GetNoteName(int interval, out Accidental accidental)
+        {
+            interval -= 1; // offset so we can use human readable intervals
 
             int[] CMajor = new int[] { 0, 2, 4, 5, 7, 9, 11, 12 };
 
-            intervalFromRoot = (intervalFromRoot + this.Position) % 7;
-            int semitonesFromRoot = Notes[intervalFromRoot].SemitonesFromRoot;
+            interval = (interval + this.Position) % 7;
+            int semitonesFromRoot = Notes[interval].SemitonesFromRoot;
 
-            int intervalInC = (intervalFromRoot + NoteOffset) % 7;
+            int intervalInC = (interval + NoteOffset) % 7;
             int semitonesFromC = (semitonesFromRoot + RootOffset) % 12;
 
             // Handle the two wrap around cases where we need to compare against top C
@@ -164,7 +236,7 @@ namespace Keys
                 semitonesFromC = 12;
 
             accidental = (Accidental)(semitonesFromC - CMajor[intervalInC]);
-            return Notes[intervalFromRoot].name;
+            return Notes[interval].Name;
         }
     }
 

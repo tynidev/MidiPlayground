@@ -63,13 +63,6 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
         static void Main(string[] args)
         {
-            List<ScaleNote> triad = new List<ScaleNote>()
-            {
-                new ScaleNote(){interval = 0},
-                new ScaleNote(){interval = 2},
-                new ScaleNote(){interval = 4},
-            };
-
             //var cMajor = new Scale(Note.c);
             //var gMinor = new Scale(Note.g, mode: Mode.Minor);
 
@@ -96,8 +89,6 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
             //Console.WriteLine();
 
             //Console.ReadKey();
-
-            var circle = new CircleOf5ths();
             //var k = circle[0];
             //k.Mode = Mode.Minor;
 
@@ -151,7 +142,32 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
 
             //File.WriteAllText(@"C:\Users\tyni\Desktop\test.xml", xml);
 
-            var chords = new Dictionary<string, List<MidiKeyboard.Key>>();
+
+            var circle = new CircleOf5ths();
+            List<KeyNote> triad = new List<KeyNote>()
+            {
+                new KeyNote(){Interval = 1},
+                new KeyNote(){Interval = 3},
+                new KeyNote(){Interval = 5},
+            };
+            var chords = new Dictionary<string, List<int>>();
+            foreach (var scale in circle)
+            {
+                scale.Mode = Mode.Major;
+                chords.Add(
+                    GetNoteName(scale, 1).ToUpper(),
+                    scale.Transpose(triad)
+                         .Select(n => (n.SemitonesFromRoot + scale.RootOffset) % 12)
+                         .ToList()
+                    );
+                scale.Mode = Mode.Minor;
+                chords.Add(
+                    GetNoteName(scale, 1).ToUpper() + $"m",
+                    scale.Transpose(triad)
+                         .Select(n => (n.SemitonesFromRoot + scale.RootOffset) % 12)
+                         .ToList()
+                    );
+            }
 
             if (InputDevice.DeviceCount < 1)
             {
