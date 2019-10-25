@@ -41,6 +41,7 @@ namespace FlashCards
                     OutputMei.Note(note, OutputMei.NoteValue.Quarter),
                     OutputMei.Chord(chord, OutputMei.NoteValue.Quarter)));
 
+            label.Content = "A\u266Dm";
             DisplayMei(xml);
         }
 
