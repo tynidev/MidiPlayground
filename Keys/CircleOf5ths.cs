@@ -1,4 +1,7 @@
-﻿namespace Keys
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Keys
 {
     public class CircleOf5ths : CircularList<Key>
     {
@@ -22,6 +25,45 @@
                 new Key(NoteLetters.b, Accidental.f),
                 new Key(NoteLetters.f),
             }).list;
+
+            foreach(var key in this)
+            {
+                int flats = key.Where(n =>
+                {
+                    var a = Accidental.n;
+                    key.GetSheetNoteName(n.Interval, out a);
+
+                    return a == Accidental.f;
+                }).Count();
+                int sharps = key.Where(n => {
+                    var a = Accidental.n;
+                    key.GetSheetNoteName(n.Interval, out a);
+
+                    return a == Accidental.s;
+                }).Count();
+
+                string keyStr = "0";
+                if(flats > 0 && sharps == 0)
+                {
+                    keyStr = $"{flats}f";
+                }
+                else if (sharps > 0 && flats == 0)
+                {
+                    keyStr = $"{sharps}s";
+                }
+                key.KeyAccidentals = keyStr;
+                KeyMap.Add(keyStr, key);
+            }
+        }
+
+        private Dictionary<string, Key> KeyMap = new Dictionary<string, Key>();
+
+        public Key this[string index]
+        {
+            get
+            {
+                return this.Where(k => k.KeyAccidentals == index).FirstOrDefault();
+            }
         }
     }
 }

@@ -6,6 +6,8 @@ namespace Keys
 {
     public class Key : CircularList<Note>
     {
+        public string KeyAccidentals = "0";
+
         public Semitone RootSemitone { get; private set; }
 
         private int noteOffset = 0;

@@ -60,10 +60,15 @@ namespace KeysUnitTests
             var circle = new CircleOf5ths();
             Assert.AreEqual(13, circle.Count);
 
-            var c = circle[0][1];
-            var gScale = circle[1];
+            var c = circle["0"][1];
+            var gScale = circle["1s"];
 
             var note = gScale.Project(c);
+            Assert.AreEqual(c.AbsolutePitch, note.AbsolutePitch);
+
+            gScale.Mode = Mode.Minor;
+
+            note = gScale.Project(c);
             Assert.AreEqual(c.AbsolutePitch, note.AbsolutePitch);
         }
 
