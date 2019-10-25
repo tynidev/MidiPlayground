@@ -16,8 +16,11 @@ namespace KeysUnitTests
             Assert.AreEqual(13, circle.Count);
 
             var expected = new int[] { 0, 1, 2, 3, 4, 5, 6, -6, -5, -4, -3, -2, -1 };
+            var keyStr = new string[] { "0", "1s", "2s", "3s", "4s", "5s", "6s", "6f", "5f", "4f", "3f", "2f", "1f" };
             for (int i = 0; i < circle.Count; i++)
             {
+                Assert.AreEqual(keyStr[i], circle[i].KeyAccidentals);
+
                 int count = 0;
                 foreach (var n in circle[i])
                 {
@@ -58,7 +61,6 @@ namespace KeysUnitTests
         public void TestProject()
         {
             var circle = new CircleOf5ths();
-            Assert.AreEqual(13, circle.Count);
 
             var c = circle["0"][1];
             var gScale = circle["1s"];
@@ -76,7 +78,6 @@ namespace KeysUnitTests
         public void TestSheetMusicNoteNames()
         {
             var circle = new CircleOf5ths();
-            Assert.AreEqual(13, circle.Count);
 
             var expected = new Dictionary<int, string>()
             {
