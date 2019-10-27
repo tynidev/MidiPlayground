@@ -82,6 +82,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FlashCards\FlashCards.csproj">
+      <Project>{783510A6-57AA-41FE-8F29-69E0D0DA3B96}</Project>
+      <Name>FlashCards</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Keys\Keys.csproj">
       <Project>{bba0b166-49ca-4d2e-82c0-9b17a0096df5}</Project>
       <Name>Keys</Name>
