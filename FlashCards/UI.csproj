@@ -103,15 +103,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Keys\Keys.csproj">
-      <Project>{6863beac-1613-4dab-bd9e-3c51708f2bd0}</Project>
-      <Name>Keys</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="verovio.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Keys\Keys.csproj">
+      <Project>{bba0b166-49ca-4d2e-82c0-9b17a0096df5}</Project>
+      <Name>Keys</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
