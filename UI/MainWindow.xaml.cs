@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using Keys;
 
-namespace FlashCards
+namespace UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -74,6 +74,11 @@ namespace FlashCards
         </div>
     </body>
 </html>");
+        }
+
+        private void showKeySigBtn_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
