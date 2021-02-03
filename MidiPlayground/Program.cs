@@ -173,8 +173,19 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
                 Console.WriteLine("No MIDI device found. Connect device and restart.");
                 return;
             }
+            for(int i = 0; i < InputDevice.DeviceCount; i++)
+            {
+                Console.WriteLine($"{i + 1}: {InputDevice.GetDeviceCapabilities(i).name}");
+            }
+            var key = Console.ReadKey();
 
             int deviceId = 0;
+            // We check input for a Digit
+            if (char.IsDigit(key.KeyChar))
+            {
+                deviceId = int.Parse(key.KeyChar.ToString()) -1; // use Parse if it's a Digit
+            }
+
             Console.WriteLine("Using Device: " + InputDevice.GetDeviceCapabilities(deviceId).name);
             using (InputDevice inDevice = new InputDevice(deviceId))
             {
