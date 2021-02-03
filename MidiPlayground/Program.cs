@@ -5,16 +5,10 @@ using System.Linq;
 using Keys;
 using System.Diagnostics;
 using MidiKeyboard;
+using FlashCards;
 
 namespace MidiPlayground
 {
-    class Card
-    {
-        public string Prompt = "";
-        public int Weight = 1500;
-        public int Picked = 0;
-    }
-
     /*
 verovio.exe test.xml -r ../../data -o test.svg --adjust-page-height --page-width=500
 inkscape.exe --without-gui --file test.svg --export-png=test.png
@@ -149,23 +143,29 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
                 new Note(){Interval = 3},
                 new Note(){Interval = 5},
             };
-            var chords = new Dictionary<string, List<int>>();
+
+            Deck deck = new Deck();
             foreach (var scale in circle)
             {
                 scale.Mode = Mode.Major;
-                chords.Add(
-                    GetNoteName(scale, 1).ToUpper(),
-                    scale.Transpose(triad)
+                deck.Add(new Card(
+                    new KeyValuePair<string, List<int>>
+                    (
+                        GetNoteName(scale, 1).ToUpper(),
+                        scale.Transpose(triad)
                          .Select(n => (int)n.RelativePitch)
                          .ToList()
-                    );
+                    )));
+                
                 scale.Mode = Mode.Minor;
-                chords.Add(
-                    GetNoteName(scale, 1).ToUpper() + $"m",
-                    scale.Transpose(triad)
-                         .Select(n => (int)n.RelativePitch)
-                         .ToList()
-                    );
+                deck.Add(new Card(
+                    new KeyValuePair<string, List<int>>
+                    (
+                        GetNoteName(scale, 1).ToUpper() + $"m",
+                        scale.Transpose(triad)
+                             .Select(n => (int)n.RelativePitch)
+                             .ToList()
+                    )));
             }
 
             if (InputDevice.DeviceCount < 1)
@@ -192,19 +192,13 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
                 keyboard = new MidiKeyboard.MidiKeyboard(inDevice);
                 keyboard.StartRecording(inDevice, KeyActions);
 
-                List<Card> cards = new List<Card>();
-                foreach(var c in chords)
-                {
-                    cards.Add(new Card() { Prompt = c.Key });
-                }
-
                 while (true)
                 {
-                    Card card = pick(cards);
-                    card.Picked++;
+                    Card card = deck.Pick();
+                    var kvp = (KeyValuePair<string,List<int>>)card.Get();
 
-                    Console.WriteLine($"Play {card.Prompt}");
-                    var playAction = new PlayChord(chords[card.Prompt]);
+                    Console.WriteLine($"Play {kvp.Key}");
+                    var playAction = new PlayChord(kvp.Value);
                     Stopwatch watch = new Stopwatch();
                     watch.Start();
                     do
@@ -214,49 +208,8 @@ inkscape.exe --without-gui --file test.svg --export-png=test.png
                     }
                     while (!playAction.Played);
                     watch.Stop();
-                    card.Weight = (((card.Picked - 1) * card.Weight) + (int)watch.ElapsedMilliseconds) / (card.Picked);
                 }
             }
-        }
-
-        private static Card pick(List<Card> cards)
-        {
-            Shuffle(cards);
-
-            int sumOfWeights = 0;
-            foreach (var c in cards)
-                sumOfWeights += c.Weight;
-
-            int randomWeight = rng.Next(1, sumOfWeights);
-
-            foreach (var c in cards)
-            {
-                randomWeight -= c.Weight;
-                if (randomWeight <= 0)
-                    return c;
-            }
-
-            throw new Exception("Should not get here");
-        }
-
-        private static Random rng = new Random((int)DateTime.Now.Ticks);
-
-        public static void Shuffle<T>(IList<T> list)
-        {
-            int n = list.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = rng.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
-            }
-        }
-
-        private static void OutputCurrentPlayedNotes()
-        {
-            Console.WriteLine(string.Join(" ", keyboard.OnKeys.Select(k => $"{k.Name}{k.Register}")));
         }
     }
 }
